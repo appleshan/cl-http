@@ -1,0 +1,162 @@
+? 
+#<Package "XML-PARSER">
+(("**;*.*" "www:Dokumente:Standards:XML:XMLConf:xmlconf:**:*.*"))
+#<STANDARD-METHOD XML-PARSER::STREAM->STRING (STREAM)>
+#<STANDARD-METHOD XML-PARSER::STREAM->STRING (PATHNAME)>
+#<STANDARD-METHOD XML-PARSER::STREAM->VECTOR (STREAM)>
+#<STANDARD-METHOD XML-PARSER::STREAM->VECTOR (PATHNAME)>
+XML-PARSER::*DISCREPANCIES*
+XML-PARSER::REPORT-PARSE
+
+
+#4P"xmlconf:oasis;*pass*.xml" (:PASS T)....
+
+p04pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: tag '<A.-:̀·/>' is a qualified name -> Error #<|NSC: Prefix Declared| #x85EB4CE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p04pass1.xml"> :POSITION ...)) :INPUT ...). [NSC: Prefix Declared] : no visible binding for prefix: "A.-".
+
+p05pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: tags '<::._-0/>' and '<:/>' don't follow QName constraint. -> Error #<|NSC: Prefix Declared| #x85EEC96> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p05pass1.xml"> :POSITION ...)) :INPUT ...). [NSC: Prefix Declared] : no visible binding for prefix: "A"......
+
+p11pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: the system literal contains a fragment identifier. -> Error #<|WFC: [SystemLiteral]| #x8608F5E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p11pass1.xml"> :POSITION ...)) :INPUT ...). [WFC: [SystemLiteral]] : production failed. [WFC: [SystemLiteral]] : no fragment identifier permitted: "a%a&b&#0<!ELEMENT<!--<?</>?>/\\''".............................................................................
+
+p66pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: IR: character is outside of mcl range. -> Error #<|WFC: Legal Character| #x8709726> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p66pass1.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10F2ec"/#x10F2EC (not supported)..........
+
+#4P"xmlconf:oasis;*fail*.xml" (:PASS NIL).......................................................................
+
+p06fail1.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/oasis/p06fail1.xml #x87E42AE>: OK/DISCREPANT: VR: idref validity not enforced.
+
+p08fail1.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/oasis/p08fail1.xml #x87E915E>: OK/DISCREPANT: VR: a null name or empty set is permitted.
+
+p08fail2.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/oasis/p08fail2.xml #x87ECDD6>: OK/DISCREPANT: VR: passes when not validating..........................
+
+p16fail3.xml (p n) (v n): PASSED: #<DOC-NODE <no uri> #x883717E>: OK/DISCREPANT: PE: is not present in the documentation and has a legal NCName as PiTarget.......................................................................................................................................................
+
+#4P"xmlconf:sun;not-wf;*.xml" (:PASS NIL)........................................................
+
+#4P"xmlconf:sun;invalid;*.xml" (:PASS NIL :VALIDATE T)..........................
+
+empty.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/empty.xml #x8AD39DE>: OK/DISCREPANT: VR: whitespace, comments, and processing instructions are permitted in EMPTY.........
+
+id08.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id08.xml #x8AFD366>: OK/DISCREPANT: VR: validation does not check id cross-references.
+
+id09.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id09.xml #x8B0164E>: OK/DISCREPANT: VR: validation does not check id cross-references.
+
+not-sa01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #x8B05C66>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa02.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #x8B0E40E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa03.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #x8B17E4E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa04.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #x8B1FE76>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa05.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #x8B27CE6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa06.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #x8B2FBB6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa07.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #x8B37BCE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa08.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #x8B3FC2E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa09.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #x8B47DB6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa10.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #x8B4FD9E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa11.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #x8B57EEE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa12.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #x8B6017E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa13.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #x8B6819E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+not-sa14.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #x8B7034E>: OK/DISCREPANT: VR: standalone stipulation not enforced...........................
+
+pe01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/pe01.xml #x8CA30F6>: OK/DISCREPANT: PE: a parameter entities is not recognized in an attribute default........
+
+#4P"xmlconf:sun;valid;*.xml" (:PASS T :VALIDATE T)...
+
+ext01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: references a non-existent external entity. -> Error #<|WFC: External Parsed Entity| #x8CD5D0E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:sun:valid:ext01.xml"> :POSITION ...)) :INPUT ...). [WFC: External Parsed Entity] : entity identified as (SYSTEM "null.ent" PUBLIC NIL) does not have the form of an external parsed entity: File #P"www:Dokumente:Standards:XML:XMLConf:xmlconf:sun:valid:null.ent" does not exist......
+
+notation01.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition -> Error #<|VC: Notation Attributes| #x8D04AC6> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:sun:valid:notation01.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::GIF..................
+
+#4P"xmlconf:ibm;not-wf;*;*.xml" (:PASS NIL)
+
+432gewf.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/not-wf/misc/432gewf.xml #x8D9A82E>: OK/DISCREPANT: PE: general entity content constraint not enforced..............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+
+#4P"xmlconf:ibm;invalid;*;*.xml" (:PASS NIL :VALIDATE T).
+
+ibm29i01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P29/ibm29i01.xml #x9613296>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P32/ibm32i01.xml #x961C8CE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i02.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P32/ibm32i02.xml #x962191E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i03.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P32/ibm32i03.xml #x9626586>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i04.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P32/ibm32i04.xml #x962B4C6>: OK/DISCREPANT: VR: standalone stipulation not enforced.........
+
+ibm49i01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P49/ibm49i01.xml #x965332E>: OK/DISCREPANT: VR: group/pe nesting not enforced..
+
+ibm50i01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P50/ibm50i01.xml #x965D2AE>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+ibm51i01.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P51/ibm51i01.xml #x966406E>: OK/DISCREPANT: VR: group/pe nesting not enforced........
+
+ibm56i08.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P56/ibm56i08.xml #x9686096>: OK/DISCREPANT: PE: references a non-existent external entity...
+
+ibm56i10.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/invalid/P56/ibm56i10.xml #x969188E>: OK/DISCREPANT: VR: id reference validity is not enforced..........................
+
+#4P"xmlconf:ibm;valid;*;*.xml" (:PASS T :VALIDATE T).
+
+ibm02v01.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: characters beyond supported limit at offset 281. -> Error #<INTERNAL-XML-ERROR #x970323E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P02:ibm02v01.xml"> :POSITION ...)) :INPUT ...). unsupported unicode datum: (240 144 128 ...). unsupported unicode datum: (240 144 128 ...)............................................................................................................
+
+ibm58v01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: constraint introduced in errata. -> Error #<|VC: No Duplicate Tokens| #x98F938E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P58:ibm58v01.xml"> :POSITION ...)) :INPUT ...). [VC: No Duplicate Tokens] : The names in a single declaration must all be distinct..
+
+ibm59v01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: constraint introduced in errata. -> Error #<|VC: No Duplicate Tokens| #x99039DE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P59:ibm59v01.xml"> :POSITION ...)) :INPUT ...). [VC: No Duplicate Tokens] : The names in a single declaration must all be distinct.......................
+
+ibm66v01.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: characters beyond supported limit. -> Error #<|WFC: Legal Character| #x997480E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P66:ibm66v01.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported)...............
+
+#4P"xmlconf:xmltest;not-wf;*;*.xml" (:PASS NIL)...................................................................................
+
+074.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/074.xml #x9AB0626>: OK/DISCREPANT: VR: group/pe nesting not enforced..............................
+
+104.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/104.xml #x9B0337E>: OK/DISCREPANT: VR: group/pe nesting not enforced............
+
+115.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/115.xml #x9B20E1E>: OK/DISCREPANT: PE a single character reference is well-formed...
+
+117.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/117.xml #x9B2672E>: OK/DISCREPANT: PE a single character reference is well-formed...
+
+119.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/119.xml #x9B2C26E>: OK/DISCREPANT: PE a single character reference is well-formed..
+
+120.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/120.xml #x9B2F0E6>: OK/DISCREPANT: PE a single character reference is well-formed..............................................................
+
+181.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/181.xml #x9BD60D6>: OK/DISCREPANT: VR: group/pe nesting not enforced..
+
+182.xml (p n) (v n): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/not-wf/sa/182.xml #x9BD9396>: OK/DISCREPANT: VR: group/pe nesting not enforced......
+
+#4P"xmlconf:xmltest;invalid;*.xml" (:PASS NIL :VALIDATE T)
+
+001.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/invalid/001.xml #x9BE9186>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+002.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/invalid/002.xml #x9BED1C6>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+003.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/invalid/003.xml #x9BF11F6>: OK/DISCREPANT: PE: 003-2.ent is missing....
+
+006.xml (p n) (v y): PASSED: #<DOC-NODE file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/xmltest/invalid/006.xml #x9BFBDB6>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+#4P"xmlconf:xmltest;valid;*;*.xml" (:PASS T :VALIDATE T)................
+
+003.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: 003-2.ent is missing. -> Error #<|WFC: External Subset| #x9C49FA6> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:not-sa:003-1.ent"> :POSITION ...)) :INPUT ...). [WFC: External Subset] : entity identified as (SYSTEM "003-1.ent" PUBLIC NIL) does not have the form of an external subset: Error #<|WFC: External Subset| #x9C49E5E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:not-sa:003-1.ent"> :POSITION ...)) :INPUT ...). [WFC: External Subset] : entity identified as (SYSTEM "003-2.ent" PUBLIC NIL) does not have the form of an external subset: File #P"www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:not-sa:003-2.ent" does not exist........................................
+
+012.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: attribute name ':' is not namespace conform -> Error #<INCOMPLETE-PARSE #x9CEF3EE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:012.xml"> :POSITION ...)) :INPUT ...). [INCOMPLETE-PARSE] : incomplete parse........................................
+
+052.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<INTERNAL-XML-ERROR #x9D7C8B6> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:052.xml"> :POSITION ...)) :INPUT ...). unsupported unicode datum: (240 144 128 ...). unsupported unicode datum: (240 144 128 ...)............
+
+064.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<|WFC: Legal Character| #x9DA8266> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:064.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported)............
+
+076.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition. -> Error #<|VC: Notation Attributes| #x9DD2986> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:076.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::\n1.............
+
+089.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<|WFC: Legal Character| #x9E032AE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:089.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported).
+
+090.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition. -> Error #<|VC: Notation Attributes| #x9E067AE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:090.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::\n..............................
+(MAP NIL #'(LAMBDA (LOCATION) (DESTRUCTURING-BIND (DIRECTORY &REST ARGS &KEY VALIDATE PASS (REDUCE T)) LOCATION (FORMAT *TRACE-OUTPUT* "~%~%~s ~s" DIRECTORY ARGS) (MAP NIL #'(LAMBDA (PATH) (WHEN (REPORT-PARSE PATH :REDUCE REDUCE :VALIDATE VALIDATE :PASS PASS) (INCF CONFORMANT-COUNT)) (INCF CASE-COUNT)) (DIRECTORY DIRECTORY)))) '((#4P"xmlconf:oasis;*pass*.xml" :PASS T) (#4P"xmlconf:oasis;*fail*.xml" :PASS NIL) (#4P"xmlconf:sun;not-wf;*.xml" :PASS NIL) (#4P"xmlconf:sun;invalid;*.xml" :PASS NIL :VALIDATE T) (#4P"xmlconf:sun;valid;*.xml" :PASS T :VALIDATE T) (#4P"xmlconf:ibm;not-wf;*;*.xml" :PASS NIL) (#4P"xmlconf:ibm;invalid;*;*.xml" :PASS NIL :VALIDATE T) (#4P"xmlconf:ibm;valid;*;*.xml" :PASS T :VALIDATE T) (#4P"xmlconf:xmltest;not-wf;*;*.xml" :PASS NIL) (#4P"xmlconf:xmltest;invalid;*.xml" :PASS NIL :VALIDATE T) (#4P"xmlconf:xmltest;valid;*;*.xml" :PASS T :VALIDATE T))) took 149,328 milliseconds (149.328 seconds) to run.
+Of that, 3,274 milliseconds (3.274 seconds) were spent in The Cooperative Multitasking Experience.
+ 25,816,696 bytes of memory allocated.
+(:CASES 1812 :CONFORMANT 1750)
+:EOF
+? 

@@ -1,0 +1,8 @@
+Log analysis software written by Rainer Joswig, joswig@lisp.de
+
+Depends on CL-HTTP.
+
+Copyright Rainer Joswig, Hamburg, Germany, 2006-2008
+
+All rights reserved
+

@@ -1,0 +1,114 @@
+<html>
+<body bgcolor="#545454" text="#dddddd" link="#e0c008" vlink="#e0c008">
+Hdir allows convenient navigation of multilevel directory
+structures. Click on directory markers to collapse or expand nodes that have
+subnodes.
+
+<p>
+<h3>Hdir Applet</h3>
+<p>
+Class files: <td valign=top><a href="../Hdir.class">Hdir.class</a>
+and <td valign=top><a href="../Node.class">Node.class</a>
+<p>
+Applet Parameters:
+<p>
+<table>
+<tr>
+<td valign=top><b>data_url</b>
+<td>Location of data file that defines the tree structure.  See
+instructions below on how to create these files.
+<tr>
+<td valign=top><b>debug</b>
+<td>Print debugging info?  Defaults to "no".
+<tr>
+<td valign=top><b>palette</b>
+<td> Define a color palette, referenced by palette index from 0 to
+length(palette)-1. Defaults to palette[0]=white, palette[1]=black.<br>
+Syntax: comma-separated list of hexadecimal color-values.<br>
+<em>color-values</em> are in the form "#rrggbb".
+<tr>
+<td valign=top><b>bg_color</b>
+<td>Background color palette index, defaults to 0.
+<tr>
+<td valign=top><b>hilite_color</b>
+<td>Hilite color palette index, defaults to 1.
+<tr>
+<td valign=top><b>context_url</b>
+<td>Node URLs are merged against this absolute URL.  Defaults to the
+document base.
+<tr>
+<td valign=top><b>font_size</b>
+<td>The size font used, defaults to 10.
+<tr>
+<td valign=top><b>x_space</b>
+<td>The amount of indentation space, defaults to 15.
+<tr>
+<td valign=top><b>y_space</b>
+<td>The amount of space skipped between lines, defaults to 15.
+<tr>
+<td valign=top><b>start_node</b>
+<td>Start by selecting this node, optional.
+</table>
+
+<p>
+<h3>Creating Hdir Data Files</h3>
+<p>
+Class files: <td valign=top><a href="../HdirCreator.class">HdirCreator.class</a>
+and <td valign=top><a href="../Node.class">Node.class</a>
+<p>
+HdirCreator is a Java application that creates data files for use by
+the Hdir applet.  A tree is defined by a text file ending with the
+<code>.nodes</code> extension.  Nodes are referred to by <em>node
+ids</em>, unique strings that are not visible in the tree display.  Node
+files are formatted as follows:
+<p>
+<ul>
+<li>The first line defines a list of top-level nodes.  This is a
+comma-separated list of node ids.
+<li>This is followed by one or more node definitions.  Each node
+definition consists of two lines.  The first line of a node definition
+consists of only its node id. The second line observes the following syntax: 
+<br>
+<code>display-name, font-color, url, target-frame, expand, nodes</code><br>
+<em>display-name</em> string representation of the node.<br>
+<em>font-color</em> palette index for font color, empty defaults to 1.<br>
+<em>url</em> URL relative to context_url, empty for no hyperlink.<br>
+<em>target-frame</em> target frame, empty defaults to "_self".<br>
+<em>expand</em> "yes" or "no", denoting the initial display state.<br>
+<em>nodes</em> comma-separated list of subnode ids,
+empty for no subnodes.
+<li> There must be no other lines in the text file.
+</ul>
+
+For an example nodes file, see <a href="../demo.nodes"
+target="_top">demo.nodes</a>.
+<p>
+Once a nodes file is ready, it can be used to create an Hdir data file.
+Data files end with the <code>.data</code> extension.  The data file
+contains the same information as the nodes file, formatted so that the
+applet may read it more quickly.  A data file is a <em>binary file</em>
+and should be treated like an image when it is copied to a new
+location. The location of this file is supplied as the
+<code>data_url</code> parameter to the Hdir applet.
+<p>
+HdirCreator can be invoked in two ways, on the command-line or as a
+window.
+<p>
+From the command-line:<br>
+<p>
+<code>% java HdirCreator input.nodes output.data</code><br>
+Parses the information in the text file input.nodes and writes a new
+binary data file.  The data file may then be used by the Hdir applet.
+<p>
+<code>% java HdirCreator</code><br>
+Opens a window that provides the same functionality of the command-line 
+interface.
+<!--
+<hr>
+<address>
+<a href= "mailto:cvince@mit.edu">cvince@mit.edu</a> <br>
+</address>
+<a href="http://mit.edu/cvince/">http://mit.edu/cvince/</a>
+-->
+</body>
+</html>

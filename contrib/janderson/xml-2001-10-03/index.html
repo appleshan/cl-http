@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!--
+<DOCUMENTATION>
+ <CHRONOLOGY>
+  <DELTA DATE='19971115'>
+   <A HREF="mailto:jaa%mecom-gmbh@mixx.de">jaa </A>:
+   this document was composed to accompany the prototype distribution.
+   covers background, program structure, and file organization.
+   </DELTA>
+  <DELTA DATE='19971210'>
+   jaa:
+   additions for model compiler and element matcher
+   </DELTA>
+  <DELTA DATE='19980102'>
+   jaa: relation to other lisp serialization / representation efforts
+   <DELTA>
+  <DELTA DATE='20010620'>added counter</DELTA>
+  </CHRONOLOGY>
+ </DOCUMENTATION>
+-->
+
+	<META NAME="GENERATOR" Content="Symantec Visual Page 1.0.3">
+	<TITLE>Common Lisp - XML</TITLE>
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#E8E8E8">
+
+<H2 ALIGN="CENTER">Common Lisp support for the<BR>
+'Extensible Markup Language'<BR>
+(CL-XML)</H2>
+<P><A HREF="mailto:James.Anderson@setf.de">james anderson</A>, 
+<HR>
+</P>
+<P>CL-XML is a collection of Common LISP modules for data stream parsing and serialization
+according to the &quot;Extensible Markup Language&quot; and anscilliary standards.
+The modules perform parsing and serialization between XML, XML Query, and XML Path
+expressions and DOM-compatible CLOS instances. The XML processor includes a conformant,
+validating, namespace-aware model-based parser. It supports, in particular, namespace-aware
+DTD-based validation. The XPATH module comprises LISP bindings for the XML Path library,
+an S-expression-based namespace-aware path model, and a macro-based path model compiler
+which implements an XPATH-algebra. The XQUERY module comprises LISP bindings for
+the XML Query library, an S-expression-based query model which incorporates the XPATH
+facilities, and a macro-based query compiler. The base CLOS model implements the
+XML Query Data Model in a class hierarchy which presents an Infoset compatible programming
+interface.</P>
+<P>A description is available <A HREF="documentation/index.html">here</A>.</P>
+<P>
+<HR>
+</P>
+<H3>Availability</H3>
+<H4></H4>
+<H4>BNF</H4>
+<P>The respective BNF descriptions of the respective <A HREF="bnf/xml-grammar.bnf">XML</A>,
+<A HREF="bnf/xpath-grammar.bnf">XPath</A>, and <A HREF="bnf/xql-grammar.bnf">XQuery</A>
+syntax used to generate the parsers are available individually. In some cases, they
+have been normalized and otherwise edited to expedite parsing. I'd be interested
+to hear if any of the modifications would appear to affect conformance.</P>
+<H4></H4>
+<H4>Source</H4>
+<P>The following source archives are available.</P>
+
+<DL>
+	<DT><B>0.913</B></DT>
+	<DD>This release includes support for name instances. It is available initially as
+	a .sit file only.
+	<UL>
+		<LI><A HREF="XML0-912/XML-0-912-20010912-MCL.sit">MCL 4.2</A>
+	</UL>
+	<DT><B>0.911</B></DT>
+	<DD>The source tree has been updated to 0.912<BR>
+	[ In-progress source is available for the curious in the <A HREF="http://homepage.mac.com/WebObjects/FileSharing.woa/4/wo/7SsV1gwQSU7zl4oR.1/2.2.1.2.27.31.97.0.35.0.0.1.1.1?user=james_anderson&fpath=XML%3Acode&templatefn=FileSharing1.html">code
+	tree</A>. Use the <A HREF="sysdcl.lisp">system definition file</A> for reference.]
+	<DT><B>0.908</B></DT>
+	<DD>This version supports full HTTP client access with CL-HTTP and HTTP/1.0 access
+	when compiled stand-alone.<BR>
+	Each archive employs the line ending and source file type appropriate for the respective
+	platform.
+	<UL>
+		<LI>MCL 4.2 <A HREF="XML0.908/XML-0-908-20010608-MCL.sit">xml</A>, <A HREF="XML0.908/atn-parser-20010623.sit">bnf-atn-parser</A>
+		(please take both)
+		<LI><A HREF="XML0.908/XML-0-908-20010608-PC.ZIP">Allegro 5.01</A>
+		<LI><A HREF="XML0.908/XML-0-908-20010608-PC.ZIP">LispWorks</A> (please take a corrected
+		copy of the <A HREF="defsystem.lisp">system definition file</A> and get in touch
+		with me for lispworks-specific patches. )
+	</UL>
+	<DT><B>previous versions</B></DT>
+	<DD>0.906 <A HREF="XML0.906/xml0.906-20010602.sit">mcl</A>, <A HREF="XML0.906/XML0.906-20010602.ZIP">allegro</A><BR>
+	0.901 <A HREF="XML0.901/XML0.901-20010419.sit">mcl</A>
+</DL>
+
+<H4></H4>
+<H4>Examples</H4>
+
+<DL>
+	<DT><B>graphs</B></DT>
+	<DD>I was curious about how an automatic layout package would fare with DTD and DOM
+	graphs. A <A HREF="Graphs/xqdm-graph.lisp">naive generator</A> for <A HREF="http://www.graphviz.org/">GraphViz</A>'s
+	&quot;dot&quot; format is a straight-forward graph walk. The <A HREF="Graphs/test-xqdm-graph.lisp">results</A>
+	are adequate for smaller examples, but larger instances will need a more refined
+	approach. The larger files failed to load with the current GraphViz 1.7.6 beta for
+	Windows. As I'm rather Linux/C imparied, I was fortunate and grateful, that someone
+	was curious and ran them through the Linux version. Thus the two SVGs below, which
+	I was able to view with Adobe's <A HREF="http://www.adobe.com/svg/
+  anyzone:ID    CDATA  #IMPLIED">SVG</A>
+	plugin.
+	<P>email (from &quot;xml:tests:xml:email.xml&quot;) : <A HREF="Graphs/email.dot">DOM</A>,
+	<A HREF="Graphs/emailD.dot">DTD</A><BR>
+	channel (from &quot;xml:tests:xml:channel.xml&quot;): <A HREF="Graphs/channel.dot">DOM</A>,
+	<A HREF="Graphs/channelD.dot">DTD</A><BR>
+	REC-xml-20001006.xml: DTD as <A HREF="Graphs/xmlSpec.dot">DOT</A>, as <A HREF="Graphs/xmlSpec.svg"
+	type="image/svg+xml">SVG</A>(768K)<BR>
+	REC-xhtml1-20000126.html: DTD as <A HREF="Graphs/xhtmlHtml.dot">DOT</A>, as <A HREF="Graphs/xhtmlHtml.svg"
+	type="image/svg+xml">SVG</A>(444K)</P>
+	<P>Anyone curious about DOCBOOK?</P>
+	<DT><B>xquery / use case NS issues</B></DT>
+	<DD>Use-case NS of <A HREF="http://www.w3.org/TR/2001/WD-xmlquery-use-cases-20010608">WD-xmlquery-use-cases-20010608</A>
+	reserved the publication of a DTD until schemas were available. It is not clear that
+	this delay is necessary. The documents below were processed, validated, and serialized
+	with 0.908+
+	<P><A HREF="http://homepage.mac.com/james_anderson/XML/1-7-NS/AuctionWatchList.xml">AuctionWatchList.xml</A><BR>
+	<A HREF="http://homepage.mac.com/james_anderson/XML/1-7-NS/AuctionWatchList.dtd">AuctionWatchList.dtd</A><BR>
+	<A HREF="http://homepage.mac.com/james_anderson/XML/1-7-NS/record.dtd">record.dtd</A><BR>
+	<A HREF="http://homepage.mac.com/james_anderson/XML/1-7-NS/AuctionWatchListOut.xml">AuctionWatchListOut.xml</A>
+</DL>
+
+<P>
+<HR>
+</P>
+
+<P>&#169; setf.de 2001 [20010910]<BR>
+<!-- Start of TheCounter.com Code --> <SCRIPT TYPE="text/javascript" LANGUAGE="javascript">
+s="na";c="na";j="na";f=""+escape(document.referrer)
+
+s=screen.width;v=navigator.appName
+if (v != "Netscape") {c=screen.colorDepth}
+else {c=screen.pixelDepth}
+j=navigator.javaEnabled()
+
+function pr(n) {document.write(n,"\n");}
+NS2Ch=0
+if (navigator.appName == "Netscape" &&
+navigator.appVersion.charAt(0) == "2") {NS2Ch=1}
+if (NS2Ch == 0) {
+r="&size="+s+"&colors="+c+"&referer="+f+"&java="+j+""
+pr("<A HREF=\"http://www.TheCounter.com\" TARGET=\"_top\"><IMG"+
+" BORDER=0 SRC=\"http://c1.thecounter.com/id=839555"+r+"\"><\/A>")}
+</SCRIPT><NOSCRIPT><A
+HREF="http://www.TheCounter.com" target="_top"><IMG SRC="http://c1.thecounter.com/id=839555"
+ALIGN="BOTTOM" ALT="TC" BORDER="0"></A> </NOSCRIPT> <!-- End of TheCounter.com Code --><A
+HREF="http://www.digitool.com/"><IMG SRC="mcl.gif" WIDTH="64" HEIGHT="35" ALIGN="BOTTOM"
+BORDER="2"></A>
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,106 @@
+;;; -*- Mode: LISP; Syntax: Ansi-common-lisp; Package: user; Base: 10 -*-
+
+(defun test-1 ()
+  (html:with-html-document (:declare-dtd-version-p t)
+    (html:with-document-preamble ()
+      (html:declare-title "CSS Style Sheet Example")
+      (html4:with-style ()
+	(html4:with-comment()
+	  (css:@import "aural-styles.css" '(:aural))
+	  (css:@page nil :margin "0.5em")
+	  (css:style :body :font-family "Baskerville, \"Heisi Mincho W3\", Symbol, serif")
+	  (css:style :h1 :font-size "24pt" :color 'red)
+	  (css:style 'h2 :font-size "18pt" :color :white)
+	  (css:style "h3" :font-size "12pt" :font-style "italic" :color "blue")
+	  (css:style '(h4 h5) :font-size "10pt" :color :black))))
+    (html:with-standard-document-body ()
+      (ns4.0:with-section-heading ("Heading ONE" :level 1)
+	(ns4.0:with-section-heading ("Heading TWO" :level 2)
+	  (ns4.0:with-section-heading ("Heading THREE" :level 3)
+	    (ns4.0:with-paragraph (:style (css:style nil :font-size "10pt" :color 'green)) 
+	      (format t "Hello, world!"))))))))
+
+
+(defun test-2 ()
+  (html:with-html-document (:declare-dtd-version-p t)
+    (html:with-document-preamble ()
+      (html:declare-title "NS4.0 Style Sheet Example")
+      (let ((ns4.0:*style-sheet* :javascript))
+	(ns4.0:with-style ()
+	  (ns4.0:style "H1" :font-size "24pt" :color 'blue)
+	  (ns4.0:style "H2" :font-size "18pt" :color 'red)
+	  (ns4.0:style "P" :font-size "12pt" :font-style "italic" :color "green")))
+      (html:with-standard-document-body ()
+	(ns4.0:with-section-heading ("Heading ONE" :level 1)
+	  (ns4.0:with-section-heading ("Heading TWO" :level 2)
+	    (ns4.0:with-paragraph () (format t "Hello, world!"))))))))
+
+#|
+Command: (test-1)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>CSS Style Sheet Example</TITLE>
+<style type="text/css">
+<!-- 
+@import url("aural-styles.css") aural;
+  @page {
+    margin: 0.5em;
+  }
+  body {
+    font-family: Baskerville, "Heisi Mincho W3", Symbol, serif;
+  }
+  h1 {
+    color: red;
+    font-size: 24pt;
+  }
+  h2 {
+    color: white;
+    font-size: 18pt;
+  }
+  h3 {
+    color: blue;
+    font-size: 12pt;
+    font-style: italic;
+  }
+  h4, h5 {
+    color: black;
+    font-size: 10pt;
+  }
+ -->
+</style>
+</HEAD>
+<BODY ALINK="#FF0000" VLINK="#800080" LINK="#0000FF" TEXT="#000000" BGCOLOR="#FFFFFF">
+<h1>Heading ONE</h1>
+<h2>Heading TWO</h2>
+<h3>Heading THREE</h3>
+<p style="color: green; font-size: 10pt;">Hello, world!</p>
+</BODY>
+</HTML>
+NIL
+
+Command: (test-2)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>NS4.0 Style Sheet Example</TITLE>
+<style type="text/javascript">
+  H1.fontSize = "24pt";
+  H1.color = "blue";
+
+  H2.fontSize = "18pt";
+  H2.color = "red";
+
+  P.fontSize = "12pt";
+  P.fontStyle = "italic";
+  P.color = "green";
+</style>
+<BODY ALINK="#FF0000" VLINK="#800080" LINK="#0000FF" TEXT="#000000" BGCOLOR="#FFFFFF">
+<h1>Heading ONE</h1>
+<h2>Heading TWO</h2>
+<p>Hello, world!</p>
+</BODY>
+</HEAD>
+</HTML>
+NIL
+|#

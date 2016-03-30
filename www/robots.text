@@ -1,0 +1,5 @@
+# Documentation on robots and exclusion available at
+# http://www.robotstxt.org/wc/robots.html
+# Exclude all Robots from this server
+User-agent: *
+Disallow: /

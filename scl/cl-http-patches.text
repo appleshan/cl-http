@@ -1,0 +1,1333 @@
+diff -ru /cl-http/-release-notes-.text cl-http/-release-notes-.text
+--- /cl-http/-release-notes-.text	2006-09-15 16:50:52.000000000 +1000
++++ cl-http/-release-notes-.text	2006-09-15 16:56:39.000000000 +1000
+@@ -28,7 +28,7 @@
+                 o Allegro Common Lisp 4.2, 4.3,  5.0.1, 6.0, 6.1, 6.2, 7.0, 8.0
+                   OS: SunOS 4.1.3x; Solaris 2.4, 2.5, 4.1.3; SGI IRIX 5.3; LINUX;
+ 
+-                o The Scieneer Common Lisp 1.2.11, Linux x86 and AMD64, SPARC
++                o The Scieneer Common Lisp 1.3, Linux x86 and AMD64, SPARC
+                   Solaris 8 and 9, HPUX 11.11.
+ 
+                 o CMU Common Lisp 18e, 19b 
+diff -ru /cl-http/client/client.lisp cl-http/client/client.lisp
+--- /cl-http/client/client.lisp	2006-08-02 11:45:31.000000000 +1000
++++ cl-http/client/client.lisp	2006-08-02 12:35:13.000000000 +1000
+@@ -792,13 +792,8 @@
+ 	(client-process client) nil)
+   client) 
+ 
+-(defun match-http-client-p (resource client url)
+-  (declare (ignore resource client url))
+-  t)
+-
+ (defresource http-client (url)
+   :constructor make-resourced-client
+-  :matcher match-http-client-p
+   :initializer initialize-resourced-client
+   :deinitializer deinitialize-resourced-client
+   :initial-copies 0)
+@@ -1454,8 +1449,7 @@
+ #-Genera
+ (defmethod file-url-copy-file-to-http-stream ((from-pathname pathname) http-stream &key content-type url additional-headers
+                                          (user-id "anonymous") (user-pw (server-mail-address)))
+-  (declare (values success-p)
+-           (ignore port))
++  (declare (values success-p))
+   (flet ((handle-invalid-file-user-id-and-password (&rest ignore)
+            (declare (ignore ignore))
+            (signal 'http::client-unauthorized-file-access :url url :method :get
+@@ -1492,7 +1486,6 @@
+ 
+ #+CL-HTTP-FTP-CLIENT
+ (defmethod ftp-copy-file ((from-url url:ftp-pathname) to-stream &key (user-id "anonymous") (user-pw (user-mail-address)))
+-  (declare (ignore element-type))
+   (flet ((write-filename (stream)
+            (url::write-object-name-string from-url stream t))
+          (handle-invalid-ftp-user-id-and-password (&rest ignore)
+diff -ru /cl-http/client/connection.lisp cl-http/client/connection.lisp
+--- /cl-http/client/connection.lisp	2006-08-02 11:45:31.000000000 +1000
++++ cl-http/client/connection.lisp	2006-08-02 12:35:13.000000000 +1000
+@@ -220,7 +220,8 @@
+ 	(www-utils:bytes-received stream) 0)
+   (prog1 (deallocate-client-http-stream stream)
+          (atomic-incf *connections-deallocated*)
+-	 (client-trace "~&Deallocate Stream (~D): ~S" *connections-deallocated* stream)))
++         (client-trace "~&Deallocate Stream (~D): ~S" *connections-deallocated* stream)
++         #+scl (www-utils::free-http-stream stream t)))
+ 
+ (define-generic deallocate-connection (connection-or-client)
+   (declare (values connection))
+diff -ru /cl-http/client/sexp-browser.lisp cl-http/client/sexp-browser.lisp
+--- /cl-http/client/sexp-browser.lisp	2006-08-02 11:45:31.000000000 +1000
++++ cl-http/client/sexp-browser.lisp	2006-08-02 12:35:13.000000000 +1000
+@@ -408,9 +408,9 @@
+ 	  for creation-date = (getf plist :creation-date)
+ 	  for reference-date = (getf plist :reference-date)
+ 	  do (format stream
+-		     #-(or CLIM-SYS CMU) "~&~A~60T~:[~;~:*~\\time\\~]~:[~; (~:*~\\time\\)~]~:[~;~:* [~D Bytes]~] "
++		     #-(or CLIM-SYS CMU scl) "~&~A~60T~:[~;~:*~\\time\\~]~:[~; (~:*~\\time\\)~]~:[~;~:* [~D Bytes]~] "
+ 		     ;; Where \\time\\ escape is not recognized here - OBC
+-		     #+(or CLIM-SYS CMU) "~&~A~60T~:[~;~:*~a~]~:[~; (~:*~a)~]~:[~;~:* [~D Bytes]~] "
++		     #+(or CLIM-SYS CMU scl) "~&~A~60T~:[~;~:*~a~]~:[~; (~:*~a)~]~:[~;~:* [~D Bytes]~] "
+ 		     ftp-url creation-date reference-date length) 
+           #+Genera (format stream "~&~A~60T~:[~;~:*~\\time\\~]~:[~; (~:*~\\time\\)~]~:[~;~:* [~D Bytes]~] "
+                            ftp-url creation-date reference-date length)
+diff -ru /cl-http/client/variables.lisp cl-http/client/variables.lisp
+--- /cl-http/client/variables.lisp	2006-08-02 11:45:31.000000000 +1000
++++ cl-http/client/variables.lisp	2006-08-02 12:35:13.000000000 +1000
+@@ -23,8 +23,8 @@
+ This allows you to customize the client you run.
+ Use CLEAR-CLIENT-RESOURCE when changing this.") 
+ 
+-(define-parameter *client-http-version* #-(or Genera MCL LispWorks Allegro (and CMU mp)) :HTTP/1.0
+-		                        #+(or Genera MCL LispWorks Allegro (and CMU mp)) :HTTP/1.1
++(define-parameter *client-http-version* #-(or Genera MCL LispWorks Allegro (and CMU mp) scl) :HTTP/1.0
++		                        #+(or Genera MCL LispWorks Allegro (and CMU mp) scl) :HTTP/1.1
+                   "Controls the HTTP version that the client advertises.")
+ 
+ (define-variable *client-line-buffer* nil
+diff -ru /cl-http/client/w4-client.lisp cl-http/client/w4-client.lisp
+--- /cl-http/client/w4-client.lisp	2006-03-23 01:14:41.000000000 +1100
++++ cl-http/client/w4-client.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -104,8 +104,9 @@
+   (allocate-resource 'web-walker-cache-array element-type (or size *web-walker-cache-default-array-size*)))
+ 
+ (defun deallocate-web-walker-cache-array (array)
+-  (setf (fill-pointer array) 0)
+-  (deallocate-resource 'web-walker-cache-array array))
++  (when (adjustable-array-p array)
++    (setf (fill-pointer array) 0)
++    (deallocate-resource 'web-walker-cache-array array)))
+ 
+ (defmacro without-web-walker-cache-resource-exceptional-leaks ((var) &body body)
+   "Intercepts exceptional conditions and deallocates the resource bound to VAR."
+diff -ru /cl-http/examples/configuration.lisp cl-http/examples/configuration.lisp
+--- /cl-http/examples/configuration.lisp	2006-06-07 15:41:05.000000000 +1000
++++ cl-http/examples/configuration.lisp	2006-06-07 15:48:34.000000000 +1000
+@@ -16,8 +16,8 @@
+ 
+ ;; The standard mailing list for bug reports.
+ (setq *server-bug-list*
+-      #-(or Genera CMU) "BUG-CL-HTTP"
+-      #+(or Genera CMU) (www-utils:http-user-email-address))
++      #-(or Genera CMU scl) "BUG-CL-HTTP"
++      #+(or Genera CMU scl) (www-utils:http-user-email-address))
+ 
+ ;; Controls whether stack backtraces are included in automatic bug reporting.
+ (setq *stack-backtraces-in-bug-reports* t)
+@@ -57,11 +57,11 @@
+ 
+ ;; Set the standard port number and standard protocol serviced by this HTTP server.
+ ;; The normal protocol is :HTTP.  When SSL is implemented, the protocol can be :HTTPS
+-#-(or Allegro LispWorks Lucid CMU (and MCL OSX)) 
++#-(or Allegro LispWorks Lucid CMU scl (and MCL OSX)) 
+ (set-standard-http-port 80 :http)
+ 
+ ;; UNIX tends to lose with some implementation on port 80 so most people use 8000
+-#+(or Allegro LispWorks Lucid CMU SCL (and MCL OSX)) 
++#+(or Allegro LispWorks Lucid CMU scl (and MCL OSX)) 
+ (set-standard-http-port 8000 :http)
+ 
+ ;; Maximum number of simultaneous connections.
+@@ -80,7 +80,7 @@
+ ;; The primary store and forward mail host at the local site.  This is the
+ ;; domain name of the mail host. It may also by the IP address.  If this is
+ ;; NIL, no mail will be sent by functions REPORT-BUG and SEND-MAIL-FROM."
+-#+(or MCL (and CMU MP) SCL)
++#+(or MCL (and CMU MP) scl)
+ (setq smtp:*network-mail-host*  nil)
+ 
+ ;; This is a list of all store and forward mail hosts accessible from the
+@@ -218,7 +218,7 @@
+ ;; The number of threads simultaneously listening for HTTP connections.
+ #+MCL
+ (setq *number-of-listening-processes* 5)
+-#+(or Lucid CMU)
++#+(or Lucid CMU scl)
+ (setq *number-of-listening-processes* 1)
+ 
+ ;; The standard color scheme to use on automatically generated HTML pages prior to HTML 4.0 
+diff -ru /cl-http/examples/mail-archive.lisp cl-http/examples/mail-archive.lisp
+--- /cl-http/examples/mail-archive.lisp	2006-03-23 01:14:39.000000000 +1100
++++ cl-http/examples/mail-archive.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -284,6 +284,12 @@
+   (and (pcl::eql-specializer-p specializer)
+        (pcl::eql-specializer-object specializer)))
+ 
++#+scl
++(defun get-eql-specializer-object (specializer)
++  (typecase specializer
++    (clos:eql-specializer (clos:eql-specializer-object specializer))
++    (t nil)))
++
+ ;;;------------------------------------------------------------------- 
+ ;;;
+ ;;; MESSAGE DELIMITER MANAGEMENT 
+@@ -300,7 +306,7 @@
+     `(progn
+        (defun ,predicate-name (line &optional (length (length line)))
+ 	 ,@(when documentation (list documentation))
+-	 #+CMU(declare (type base-string line) (type (mod 1024) length))
++	 #+(or CMU scl) (declare (type base-string line) (type (mod 1024) length))
+ 	 #+Genera(declare (sys:function-parent ,predicate-name define-message-delimiter))
+ 	 ,@body)
+        (set-mail-file-format-delimiter ,keyword ',predicate-name ,prefix-delimitation-p)
+@@ -514,8 +520,8 @@
+ (defparameter *mail-file-format*
+ 	      #+Genera :lispm
+ 	      #+MCL :eudora
+-	      #+(or Franz-Inc CMU) :rmail
+-              #-(or Genera MCL CMU Franz-Inc) nil 
++	      #+(or Franz-Inc CMU scl) :rmail
++              #-(or Genera MCL CMU scl Franz-Inc) nil 
+               "The default format used when exporting mail files.")
+ 
+ 
+diff -ru /cl-http/html-parser/v10/defs.lisp cl-http/html-parser/v10/defs.lisp
+--- /cl-http/html-parser/v10/defs.lisp	2006-03-23 01:13:04.000000000 +1100
++++ cl-http/html-parser/v10/defs.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -34,7 +34,7 @@
+ (defconstant *string-char-type*
+     #+cl-http http::*standard-character-type*
+     #+(and (not cl-http) (or mcl lispworks)) 'base-character
+-    #+(and (not cl-http) (or allegro cmu)) 'base-char)
++    #+(and (not cl-http) (or allegro cmu scl)) 'base-char)
+ 
+ (defconstant *source-file-extension* "lisp")
+ 
+@@ -46,7 +46,7 @@
+ 	#+vlm"vbin"
+ 	#+3600"bin"
+ 	#+mcl (pathname-type *.fasl-pathname*)
+-	#+cmu (c:backend-fasl-file-type c:*backend*)
++	#+(or cmu scl) (c:backend-fasl-file-type c:*backend*)
+ 	(error "Not ported to this platform.")))
+ 
+ 
+diff -ru /cl-http/html-parser/v10/html-parser.lisp cl-http/html-parser/v10/html-parser.lisp
+--- /cl-http/html-parser/v10/html-parser.lisp	2006-03-23 01:13:04.000000000 +1100
++++ cl-http/html-parser/v10/html-parser.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -19,7 +19,7 @@
+   (> (file-write-date file1) (file-write-date file2)))
+ 
+ (defun probe-file* (pathname)
+-  #+(and (or allegro lispworks mcl cmu) (not cl-http))
++  #+(and (or allegro lispworks mcl cmu scl) (not cl-http))
+   (probe-file pathname)
+   #+cl-http
+   (http::probe-file* pathname))
+diff -ru /cl-http/mcl/server/resources.lisp cl-http/mcl/server/resources.lisp
+--- /cl-http/mcl/server/resources.lisp	2006-06-07 15:41:04.000000000 +1000
++++ cl-http/mcl/server/resources.lisp	2006-06-07 15:49:10.000000000 +1000
+@@ -66,7 +66,7 @@
+ ;;; 
+ ;;;
+ 
+-#+(or LispWorks CCL-3 SCL)
++#+(or LispWorks CCL-3 scl)
+ (defun make-lock (name &key (type :simple))
+   "Returns a lock named name that is suitable for use with with-lock-held.
+ TYPE can be either :SIMPLE (the default) or :MULTIPLE-READER-SINGLE-WRITER.
+@@ -82,14 +82,14 @@
+   (ccl:make-lock)
+   #+(and CCL-3 multiple-reader-locks)
+   (ccl:make-lock name type)
+-  #+SCL
++  #+scl
+   (ecase type
+     (:simple
+      (mp:make-lock name :type :recursive))
+     (:multiple-reader-single-writer
+      (thread:make-read-write-lock name))))
+ 
+-#+(or LispWorks CCL-3 SCL)
++#+(or LispWorks CCL-3 scl)
+ (defmacro with-lock-held ((lock &optional (mode :write) (whostate "Resource Lock")) &body body)
+   "Executes BODY with LOCK held in MODE, which is one of :READ or :WRITE."
+   #+LispWorks
+@@ -106,7 +106,7 @@
+   #+(and CCL-3 multiple-reader-locks)
+   `(ccl::with-lock (,lock :mode ,mode :lock-value ccl::*current-process* :whostate ,whostate)
+      . ,body)
+-  #+SCL
++  #+scl
+   (ext:once-only ((lock lock))
+     (ecase mode
+       (:read
+@@ -116,7 +116,7 @@
+        `(flet ((body ()
+ 		 ,@body))
+ 	  (etypecase ,lock
+-	    (thread:lock
++	    (thread:recursive-lock
+ 	     (assert (eq ,mode :write))
+ 	     (mp:with-lock-held (,lock ,whostate)
+ 	       (body)))
+@@ -136,12 +136,12 @@
+ (defmacro with-atomic-execution (&body body)
+   `(progn . ,body))
+ 
+-#-(or LispWorks CCL-3 SCL)
++#-(or LispWorks CCL-3 scl)
+ (defun make-lock (name &key (type :simple))
+   (declare (ignore name type))
+   nil)
+ 
+-#-(or LispWorks CCL-3 SCL)
++#-(or LispWorks CCL-3 scl)
+ (defmacro with-lock-held ((lock &optional (mode :write) (whostate "Wait for Lock")) &body body)
+   (declare (ignore lock mode whostate))
+   `(with-atomic-execution ,@body))
+@@ -158,9 +158,10 @@
+ (defvar *all-resources* nil)
+ 
+ (defun %create-resource (name &key (class 'resource))
+-  (let ((resource (make-instance class 
+-                                 :name name
+-                                 :lock (make-lock name :type :multiple-reader-single-writer))))
++  (let* ((lock-name (format nil "Resource ~A Lock" name))
++	 (resource (make-instance class 
++				  :name name
++				  :lock (make-lock lock-name :type :multiple-reader-single-writer))))
+     (set name resource)
+     (push resource *all-resources*)
+     resource))
+@@ -207,9 +208,10 @@
+       (when deinitializer 
+         (funcall deinitializer resource object))
+       (with-lock-held (lock :write "Deallocate Resource")
+-        (unless (gethash object free-table)
+-          (prog1 (push object free-list)
+-            (setf (gethash object free-table) t)))))))
++        (when (gethash object free-table)
++	  (error "Resource object already freed: ~S~%" object))
++	(prog1 (push object free-list)
++	  (setf (gethash object free-table) t))))))
+ 
+ (defmethod %allocate-resource ((resource resource) args &aux newly-created-p)
+   (flet ((create-object (resource)
+@@ -326,11 +328,12 @@
+        * resource
+        * Any additional arguments specified by args"
+   (declare (dynamic-extent args))
+-  (with-slots (pool free-list) resource
+-    (loop for idx fixnum upfrom 0 to (1- (fill-pointer pool))
+-          for object = (aref pool idx)
+-          for allocated-p = (not (member object free-list))
+-          do (apply function object allocated-p resource args))))
++  (with-slots (pool free-list lock) resource
++    (with-lock-held (lock :read "Map Resource")
++      (loop for idx fixnum upfrom 0 to (1- (fill-pointer pool))
++	    for object = (aref pool idx)
++	    for allocated-p = (not (member object free-list))
++	    do (apply function object allocated-p resource args)))))
+ 
+ (defmethod number-of-resourced-objects ((resource resource))
+   (with-slots (pool) resource
+@@ -385,7 +388,8 @@
+               deinitializer (compiled-definition set-deinitializer)
+               initial-copies set-initial-copies)
+         (unless free-table
+-          (setq free-table (make-hash-table :test #'eq :size initial-resource-size)))
++          (setq free-table (make-hash-table :test #'eq :size initial-resource-size
++					    #+scl :lock #+scl nil)))
+         (unless pool
+           (setq pool (make-array initial-resource-size :adjustable t :fill-pointer t)))
+         (clear-resource resource)
+diff -ru /cl-http/mcl/server/www-utils.lisp cl-http/mcl/server/www-utils.lisp
+--- /cl-http/mcl/server/www-utils.lisp	2006-06-07 15:41:04.000000000 +1000
++++ cl-http/mcl/server/www-utils.lisp	2006-06-07 15:50:23.000000000 +1000
+@@ -582,7 +582,7 @@
+ ;; Generic function in http:server;utils.lisp   12/18/95 -- JCMa.
+ ;; use the EOF handling to prevent running off the end and failing to detect
+ ;; that the server is no longer handing out the bits.  7/17/95 -- JCMa.
+-#-(or mcl lucid)
++#-(or mcl lucid scl)
+ (defmethod read-delimited-line (stream &optional (delimiters '(#\Return #\Linefeed)) eof buffer)
+    "Reads a line from stream which is delimited by DELIMITERS."
+    (declare (values line eof delimiter length)
+@@ -816,7 +816,7 @@
+     (declare (dynamic-extent string digest1 digest2 host))
+     (concatenate 'string "<" digest2 "@" host">")))
+ 
+-#-genera
++#-(or genera scl)
+ (define copy-vector-portion (from-vector from-start from-end to-vector to-start to-end)
+   (with-fast-array-references ((from-vector from-vector vector)
+ 			       (to-vector to-vector vector))
+@@ -901,7 +901,7 @@
+ #-(or Genera LispWorks MCL CMUCL)
+ (export 'with-timeout :www-utils)
+ 
+-#-(or SCL (and LispWorks (not LispWorks3.2)))
++#-(or scl (and LispWorks (not LispWorks3.2)))
+ (defmacro with-stream-timeout ((stream timeout &key error-p) &body body)
+   "Executes BODY and returns the values of the last form in BODY. 
+ However, if the stream goes idle for longer than TIMEOUT seconds, the
+@@ -934,13 +934,13 @@
+    (unless (live-connection-p http-stream)
+       (abort-current-connection)))
+ 
+-#-(or Genera MCL LispWorks)
++#-(or Genera MCL LispWorks scl)
+ (defmacro without-preemption ( &body body)
+   "Executes BODY without allowing the current process to be preempted.
+ This macro ensures atomic execution of BODY."
+   `(progn . ,body))
+ 
+-#-(or Genera MCL LispWorks)
++#-(or Genera MCL LispWorks scl)
+ (export 'without-preemption :www-utils)
+ 
+ 
+@@ -950,28 +950,28 @@
+ ;;;
+ 
+ ;; Define this method on http streams when a port implements SSL and can server HTTPS URLs.
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (declaim (inline local-protocol))
+ 
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (defun local-protocol (http-stream)
+   (declare (ignore http-stream))
+   :http)
+ 
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (declaim (inline port-protocol))
+ 
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (defun port-protocol (port)
+   "Returns a keyword denoting the protocol specified for PORT,
+ or NIL if no protocol has been defined for PORT."
+   (declare (ignore port))
+   :http)
+ 
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (declaim (ftype (function) http:http-service-enabled-p))
+ 
+-#-(or LispWorks SCL)
++#-(or LispWorks scl)
+ (defun port-address (port)
+   "Returns the IP address for the network interface associated with PORT.
+ When PORT is accessible over all interfaces, this returns the local
+@@ -980,4 +980,4 @@
+ network interface."
+   (declare (values address restricted-to-this-interface-p))
+   (when (http:http-service-enabled-p port)
+-    (values (local-host-domain-name) nil)))
+\ No newline at end of file
++    (values (local-host-domain-name) nil)))
+diff -ru /cl-http/proxy/proxy-cache.lisp cl-http/proxy/proxy-cache.lisp
+--- /cl-http/proxy/proxy-cache.lisp	2006-08-02 11:45:26.000000000 +1000
++++ cl-http/proxy/proxy-cache.lisp	2006-08-02 12:38:05.000000000 +1000
+@@ -130,7 +130,8 @@
+ 		    (let ((broadcast (make-broadcast-stream request-stream entity-stream)))
+ 		      (declare (dynamic-extent broadcast))
+ 		      (with-transfer-decoding* (remote-stream url http-version :headers response-headers :copy-mode :binary)
+-			(stream-copy-until-eof remote-stream broadcast :binary)))))
++			(stream-copy-until-eof remote-stream broadcast :binary)
++			(close broadcast)))))
+ 		(setf (representation-entity-invalid-p representation) (not (representation-entity-handle-valid-p representation))))))
+ 	  ;; update date after successful cache.
+ 	  (setf (representation-response-headers representation) (proxy-cacheable-response-header-plist response-headers))	;set response headers
+diff -ru /cl-http/server/authentication.lisp cl-http/server/authentication.lisp
+--- /cl-http/server/authentication.lisp	2006-09-15 16:50:52.000000000 +1000
++++ cl-http/server/authentication.lisp	2006-09-15 16:56:51.000000000 +1000
+@@ -1047,6 +1047,7 @@
+       group)))
+ 
+ (defmethod write-lisp-source :around ((realm standard-realm) (user standard-user) stream)
++  (declare (inline write-char))
+   (with-slots (groups) user
+     (let ((user-code `(intern-user ,(realm-name realm) ,(user-name user)
+                                    :if-does-not-exist :create
+diff -ru /cl-http/server/headers.lisp cl-http/server/headers.lisp
+--- /cl-http/server/headers.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/headers.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -57,6 +57,7 @@
+ 
+ (define write-header-parameter-quoting-specials (string &optional (stream *standard-output*))
+   "Writes STRING to STREAM ensuing that double quotes are used if any special characters are present."
++  (declare (inline write-char))
+   (cond ((string-contains-header-special-characters-p string)
+          (with-fast-array-references ((string string string))
+            (loop initially (write-char #.(code-char 34) stream)
+@@ -596,6 +597,7 @@
+       (error () 0))))
+ 
+ (defun print-expires-header (universal-time stream)
++  (declare (inline write-char))
+   (if (zerop universal-time)
+       (write-char #\0 stream)
+       (print-gmt-time stream universal-time)))
+@@ -669,6 +671,7 @@
+   (print-comma-separated-header header-value-list stream #'string-for-tokenized-header-keyword))
+ 
+ (defun print-equal-sign-delimited-pair (key value stream &optional (escape-p nil) (require-value-p t))
++  (declare (inline write-char))
+   (cond ((and (eql value t) (not require-value-p))
+          (write-string (string-for-tokenized-header-keyword key) stream))
+         (t (write-string (string-for-tokenized-header-keyword key) stream)
+@@ -701,6 +704,7 @@
+             (t (values (%tokenize-header-keyword string start (1+ (the fixnum pos))) t))))))
+ 
+ (defun print-equal-sign-delimited-pairs (plist stream &optional (delimiter #\;) (escape-p nil) (require-value-p t))
++  (declare (inline write-char))
+   (loop for (keyword value . more) = plist then more
+         do (print-equal-sign-delimited-pair keyword value stream escape-p require-value-p)
+         while more
+@@ -774,7 +778,8 @@
+ 
+ ;; basic method uses the default method
+ (defmethod write-www-authenticate-header-value (stream method realm &optional args)
+-  (declare (ignore args))
++  (declare (ignore args)
++	   (inline write-char))
+   (let ((pname (string-for-tokenized-header-keyword method))
+         (realm-string (realm-name realm)))
+     (write-string pname stream)
+@@ -900,12 +905,14 @@
+ 	(%parse-authorization-header string method (if pos (the fixnum (1+ pos)) end) end)))))
+ 
+ (defmethod %print-authorization-header ((method (eql :basic)) spec stream)
++  (declare (inline write-char))
+   (destructuring-bind (authorization) spec
+     (write-string (string-for-tokenized-header-keyword method) stream)
+     (write-char #\space stream)
+     (write-string authorization stream)))
+ 
+ (defmethod %print-authorization-header ((method (eql :digest)) spec stream)
++  (declare (inline write-char))
+   (write-string (string-for-tokenized-header-keyword method) stream)
+   (write-char #\space stream)
+   (loop for (keyword value . more) = spec then more
+@@ -981,6 +988,7 @@
+          (t (error "Bad syntax in the forwarded header: ~S." string)))))))
+ 
+ (defun print-forwarded-header (value stream)
++  (declare (inline write-char))
+   (destructuring-bind (origin proxy &optional port proxy-product) value
+     (fast-format stream "by ~A~A" (url:%scheme-prefix-for-protocol *standard-protocol*) (host-domain-name proxy))
+     (when (and port (/= port (url:protocol-default-port *standard-protocol*)))
+@@ -1467,6 +1475,7 @@
+ 	    and collect param-value)))
+ 
+ (defun print-mime-header-parameters (parameter-plist stream)
++  (declare (inline write-char))
+   (flet ((write-parameter-value (value stream)
+            (typecase value
+              (string
+@@ -1517,6 +1526,7 @@
+ (declaim (inline print-mime-content-type-header))
+ 
+ (defun print-mime-content-type-header (content-type stream)
++  (declare (inline write-char))
+   (destructuring-bind (type subtype . param-plist) content-type
+     (when type
+       (write (mime-content-type-string type) :stream stream :escape nil))
+@@ -1531,11 +1541,13 @@
+     (print-mime-content-type-header content-type stream)))
+ 
+ (defun write-mime-content-type-as-string (content-type &optional stream)
++  (declare (inline write-char))
+   (write-char #\" stream)
+   (print-mime-content-type-header content-type stream)
+   (write-char #\" stream))
+ 
+ (defun write-mime-content-type-keyword-as-string (content-type-keyword &optional stream)
++  (declare (inline write-char))
+   (write-char #\" stream)
+   (print-mime-content-type-header (http::%mime-content-type-spec content-type-keyword) stream)
+   (write-char #\" stream))
+@@ -1586,6 +1598,7 @@
+       (print-comma-separated-header content-type-sequence stream #'mime-content-type-header-string))))
+ 
+ (defun print-uri-header (uri-spec stream)
++  (declare (inline write-char))
+   (flet ((write-uri (uri stream)
+            (write-char #\< stream)
+            (url:write-name uri stream)
+@@ -1767,6 +1780,7 @@
+ 	      finally (return (cons (%tokenize-header-keyword string start pos) ranges)))))))
+ 
+ (defun print-range-header (value stream)
++  (declare (inline write-char))
+   (destructuring-bind (unit-type . range-specs) value
+     (loop initially (fast-format stream "~A=" (string-for-tokenized-header-keyword unit-type))
+           for (range . more) = range-specs then more
+@@ -2465,10 +2479,6 @@
+   (declare (ignore resource))
+   (make-header-position :start start :end end))
+ 
+-(defun match-make-header-position-p (resource position start end)
+-  (declare (ignore resource position start end))
+-  t)
+-
+ (defun initialize-header-position (resource position start end)
+   (declare (ignore resource))
+   (setf (header-position-start position) start
+@@ -2484,7 +2494,6 @@
+   position)
+ 
+ (defresource header-position (start end)
+-  :matcher match-make-header-position-p
+   :constructor %make-header-position
+   :initializer initialize-header-position
+   :deinitializer deinitialize-header-position)
+@@ -2523,10 +2532,6 @@
+ 		 :raw-value-position (make-header-position :start start :end end)
+ 		 :suppress-p nil))
+ 
+-(defun match-buffered-header-p (resource header keyword buffer start end)
+-  (declare (ignore resource header keyword buffer start end))
+-  t)
+-
+ (defun initialize-buffered-header (resource header keyword buffer start end)
+   (declare (ignore resource))
+   (setf (header-keyword header) keyword
+@@ -2554,7 +2559,6 @@
+   header)
+ 
+ (defresource buffered-header (keyword buffer start end)
+-  :matcher match-buffered-header-p
+   :constructor make-buffered-header
+   :initializer initialize-buffered-header
+   :deinitializer deinitialize-buffered-header)
+@@ -2648,12 +2652,7 @@
+ 	(fill-pointer (%header-set-line-ends header-set)) 0)
+   header-set)
+ 
+-(defun match-header-set-p (resource header-set)
+-  (declare (ignore resource header-set))
+-  t)
+-
+ (defresource header-set (keyword buffer raw-value-position)
+-  :matcher match-header-set-p
+   :constructor make-header-set
+   :deinitializer deinitialize-header-set)
+ 
+@@ -3268,6 +3267,7 @@
+       (terpri stream))))
+ 
+ (defmethod print-header :around ((header buffered-header) &optional (stream *standard-output*))
++  (declare (inline write-char))
+   (cond ((%header-buffer header)
+ 	 (let* ((keyword (header-keyword header))
+ 		(collapsable-p (%header-collapsable-p keyword))
+@@ -3320,6 +3320,7 @@
+   (%write-header header value stream))
+ 
+ (defmethod write-header (header-name (header header) stream &aux raw-value)
++  (declare (inline write-char))
+   (cond ((setq raw-value (%header-raw-value header))
+ 	 (loop initially (fast-format stream "~A: " (symbol-name header-name))
+ 	       for (val . more) = raw-value then more
+@@ -3332,6 +3333,7 @@
+ 	(t (error "Unable to extract a header value from ~A." header))))
+ 
+ (defmethod write-header :around (header-name (header buffered-header) stream)
++  (declare (inline write-char))
+   (cond ((%header-buffer header)
+ 	 (flet ((write-value (buffer start end)
+ 		  (with-fast-array-references ((buffer buffer string))
+@@ -3359,6 +3361,7 @@
+ ;;;
+ 
+ (defun %write-raw-header (header value stream)
++  (declare (inline write-char))
+   (flet ((write-a-header (header-name value stream)
+            (write header-name :stream stream :escape nil)
+            (write-char #\: stream)
+@@ -3765,6 +3768,7 @@
+ ;;; CHUNKED TRANSFER ENCODING
+ ;;;
+ 
++#-scl
+ (defmacro %with-chunked-transfer-encoding ((stream &key chunk-function footer-plist) response-and-headers-form &body body)
+   "Executes BODY chunk transfer encoding on STREAM.
+ When non-null, RESPONSE-AND-HEADERS-FORM must send the request or reply line
+@@ -3784,6 +3788,27 @@
+               ,@body)
+      (www-utils:note-last-chunk ,stream ,footer-plist)))
+ 
++#+scl
++(defmacro %with-chunked-transfer-encoding ((stream &key chunk-function footer-plist) response-and-headers-form &body body)
++  "Executes BODY chunk transfer encoding on STREAM.
++When non-null, RESPONSE-AND-HEADERS-FORM must send the request or reply line
++and headers, which this macro follows with an appropriated tranfer-encoding
++header and blank line to end the headers. When RESPONSE-AND-HEADERS-FORM is
++not provided, only the BODY is executed."
++  (declare (ignore chunk-function))
++  `(progn
++     ,@(when response-and-headers-form
++	 `(,response-and-headers-form
++	   ;; write the special headers used in chunking content transfer.
++	   (write-header :transfer-encoding :chunked ,stream)
++	   (http::send-cr-line-feed ,stream)))
++    (let ((,stream (www-utils:note-first-chunk ,stream)))
++      (unwind-protect
++	   (progn 
++              ;; execute the body generating the dynamic data.
++	     ,@body)
++	(www-utils:note-last-chunk ,stream ,footer-plist)))))
++
+ (define-macro with-transfer-encoding ((stream transfer-encoding &key chunk-function footer-plist) &body body)
+   "Automatically encodes operations on STREAM with TRANSFER-ENCODING.
+ TRANSFER-ENCODING can be either :FIXED-LENGTH or :CHUNKED."
+@@ -3834,7 +3859,7 @@
+ 
+ ;; destructively removes  the transfer-encoding header, inserts a content-length,
+ ;; and adds any footers sent with the message.
+-#+(or Genera MCL LispWorks Allegro CMU)
++#+(or Genera MCL LispWorks Allegro CMU scl)
+ (defun update-chunk-transfer-decoded-headers (header-set stream content-length)
+   (declare (values header-set))
+   ;; add a content length header now that we know it
+@@ -3876,7 +3901,25 @@
+ 	    `(chunk-transfer-decoding-mode-finish ,stream ,headers)))
+      (values-list values)))
+ 
+-#-(or Genera MCL LispWorks Allegro CMU)
++#+scl
++(define-macro with-chunked-transfer-decoding ((stream &key (headers '*headers*)) &body body)
++  "Automatically decodes chunked content transfer encodings.
++On exit from BODY, HEADERS is extended to include content-length and any footers transmitted with
++the chunked transfer. HEADERS must be amenable to generalized value setting with SETF." 
++  `(let ((values nil)
++	 (,stream (www-utils:chunk-transfer-decoding-mode ,stream)))
++     (unwind-protect
++	  (handler-case
++	      (setq values (multiple-value-list (progn ,@body)))
++	    (end-of-file ()))
++       ,(if headers
++	    `(setf ,headers (chunk-transfer-decoding-mode-finish ,stream ,headers))
++	    `(chunk-transfer-decoding-mode-finish ,stream ,headers)))
++     (values-list values)))
++
++
++
++#-(or Genera MCL LispWorks Allegro CMU scl)
+ (define-macro with-chunked-transfer-decoding ((stream &key (headers '*headers*)) &body body)
+   "Chunked transfer decoding not available for this implementation.
+ Automatically decodes chunked content transfer encodings.
+diff -ru /cl-http/server/html2.lisp cl-http/server/html2.lisp
+--- /cl-http/server/html2.lisp	2006-04-15 19:26:34.000000000 +1000
++++ cl-http/server/html2.lisp	2006-04-29 09:13:27.000000000 +1000
+@@ -100,6 +100,7 @@
+ (define read-char-unquoting-specials (&optional input-stream (eof-errorp t) eof-value recursive-p)
+   "Reads a character from INPUT-STREAM, 
+ translating quotation tokens to corresponding special character."
++  (declare (inline read-char))
+   (macrolet ((back-out-of-bad-markup (buffer)
+                `(loop for char = (pop ,buffer)
+                       do (if (null ,buffer)
+@@ -943,6 +944,8 @@
+                   (string (write command :stream stream :escape nil))
+                   (function (funcall command stream)))))))
+ 
++(defun fbound-symbol-p (obj) (and (symbolp obj) (fboundp obj)))
++
+ (defun %collect-input-type-events (event-clauses)
+   (loop with fnames2 and fbodies2
+         for (language . clause) in event-clauses
+@@ -966,7 +969,7 @@
+                                     (etypecase command
+                                       (function (funcall command stream))
+                                       (string (write command :stream stream :escape nil))
+-                                      ((and symbol (satisfies fboundp))
++                                      ((satisfies fbound-symbol-p)
+                                        (funcall command stream)))))))
+                      into fbodies
+                    finally (setq fnames2 fnames
+diff -ru /cl-http/server/html4.lisp cl-http/server/html4.lisp
+--- /cl-http/server/html4.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/html4.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -249,6 +249,8 @@
+             (error "~S is an unknown event for ~S." event language))
+       (error "~S is not one of the known event languages: ~S" language (mapcar #'car *event-handlers*)))))
+ 
++(defun fbound-symbol-p (obj) (and (symbolp obj) (fboundp obj)))
++
+ ;; Primary function for writing events in HTML markup
+ (defun %write-events-argument (stream events)
+   (etypecase events
+@@ -268,7 +270,7 @@
+                (fast-format stream "~S"command))
+               (function 
+                (funcall command stream))
+-              ((and symbol (satisfies fboundp))
++              ((satisfies fbound-symbol-p)
+                (funcall command stream))))))))))
+ 
+ (defun %collect-events (event-clauses)
+@@ -293,7 +295,7 @@
+                                                     (funcall command stream))
+                                                    (string 
+                                                     (fast-format stream "~S" command))
+-                                                   ((and symbol (satisfies fboundp))
++                                                   ((satisfies fbound-symbol-p)
+                                                     (funcall command stream)))))))
+                  into fbodies
+                  finally (psetq fnames2 fnames
+@@ -1827,6 +1829,7 @@
+        ,@body)))
+ 
+ (define-macro with-division ((&rest args) &body body)
++  #-scl
+   (declare (#+Genera scl:arglist 
+             #+LispWorks hcl:lambda-list
+             #+MCL ccl:arglist
+@@ -3667,6 +3670,7 @@
+ ;;;
+ 
+ (define-generic accept-input (input-type query-name &rest args &key stream &allow-other-keys)
++  #-scl
+   (declare (#+Genera scl:arglist #+LispWorks hcl:lambda-list #-(or Genera LispWorks) arglist
+             input-type query-name &key default max-length size stream
+             align choices columns compact display-string image-url linebreaks preamble rows sequence-p
+diff -ru /cl-http/server/log.lisp cl-http/server/log.lisp
+--- /cl-http/server/log.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/log.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -424,7 +424,7 @@
+       ;; file system.  If the file does to exist, create it.
+       (unless (probe-file filename)
+         (with-open-file (fstream filename :direction :output :if-does-not-exist :create)
+-          #-(OR Genera Allegro ACLNT CMU) (declare (ignore fstream))))
++          #-(OR Genera Allegro ACLNT CMU scl) (declare (ignore fstream))))
+       ;; then reopen and remember it is open
+       (setq file-stream (open filename :direction :output :if-exists :append)))
+     file-stream))
+diff -ru /cl-http/server/md5.lisp cl-http/server/md5.lisp
+--- /cl-http/server/md5.lisp	2006-03-23 01:14:14.000000000 +1100
++++ cl-http/server/md5.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -578,6 +578,7 @@
+ ;; this should be specialized by different platforms to perform this operation
+ ;; in a buffer oriented manner.   9/30/96 -- JCMa.
+ (defmethod md5-encode-stream (stream element-type &optional start limit)
++  (declare (inline read-char read-byte))
+   (when start (file-position stream start))
+   (let ((bytes-to-read (when (and limit start) (- (the fixnum limit) (the fixnum start))))
+ 	(bytes-already-read 0))
+@@ -652,6 +653,7 @@
+       #'pgp-reader-function)))
+ 
+ (defun md5-encode-file-for-pgp (pathname pgp-class-byte pgp-timestamp)
++  (declare (inline read-char))
+   (with-open-file (stream pathname :direction :input)
+     (multiple-value-bind (a b c d)
+         (md5-encode
+diff -ru /cl-http/server/package.lisp cl-http/server/package.lisp
+--- /cl-http/server/package.lisp	2006-09-15 16:50:52.000000000 +1000
++++ cl-http/server/package.lisp	2006-09-15 16:56:51.000000000 +1000
+@@ -16,7 +16,7 @@
+   (defmacro add-nickname (package nickname)
+     #+Franz-Inc
+     `(defpackage ,package (:nicknames ,@(adjoin nickname (package-nicknames package))))
+-    #+(or Lucid MCL LispWorks CMU SCL)
++    #+(or Lucid MCL LispWorks CMU scl)
+     `(let ((pkg (find-package ,package)))
+        (rename-package pkg (package-name pkg) (adjoin ,nickname (package-nicknames pkg)))))
+ 
+diff -ru /cl-http/server/preferences.lisp cl-http/server/preferences.lisp
+--- /cl-http/server/preferences.lisp	2006-03-23 01:14:14.000000000 +1100
++++ cl-http/server/preferences.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -443,7 +443,7 @@
+ 
+ (define-preference :max-connections
+                    :name "Maximum Number of Connections"
+-                   :presentation-type '(integer 1 50)
++                   :presentation-type '(integer 1 1000)
+                    :prompt "Maximum number of simultaneous connections:"
+                    :default-value-form 20
+                    :get-value-form *maximum-number-of-connections*
+diff -ru /cl-http/server/server.lisp cl-http/server/server.lisp
+--- /cl-http/server/server.lisp	2006-09-15 16:50:52.000000000 +1000
++++ cl-http/server/server.lisp	2006-09-15 16:59:12.000000000 +1000
+@@ -478,6 +478,7 @@
+ (define-generic record-response-times (server url)
+   (:documentation "Increments the total requests, elapsed time, and CPU time for URL."))
+ 
++#-scl ; Port specific version supplied.
+ (defmethod record-response-times ((server basic-server-mixin) (url url:http-url))
+   (let ((cpu-time (cpu-time server))
+         (elapsed-time (elapsed-time server)))
+@@ -2775,8 +2776,9 @@
+   "Primitive to write a text document from pathname to stream without CRLF caching."
+   ;; Open text files in binary on windows because the native format is CRLF
+   ;; Prevents trouble computing file length observed in Lispworks -- JCMa 9/4/2006
+-  (with-open-file (file-stream pathname :direction :input :element-type #-MSWindows *standard-character-type* #+MSWindows '(unsigned-byte 8))
+-    (with-conditional-get-response
++  (with-open-file (file-stream pathname :direction :input :element-type #-MSWindows *standard-character-type* #+MSWindows '(unsigned-byte 8)
++			       #+scl :external-format #+scl :iso-8859-1)
++      (with-conditional-get-response
+         (stream content-type
+                 :last-modification (file-stream-creation-date file-stream)
+                 :character-set charset
+@@ -3226,9 +3228,11 @@
+     (setf (translation-method url) method)
+     url))
+ 
++(defun fbound-symbol-p (obj) (and (symbolp obj) (fboundp obj)))
++
+ (defun good-response-function-p (function)
+   (typecase function
+-    ((and symbol (satisfies fboundp)) t)
++    ((and symbol (satisfies fbound-symbol-p)) t)
+     (function t)                                ;more severe test
+     (t nil)))
+ 
+@@ -4960,7 +4964,7 @@
+                :copy-mode #.+standard-text-copy-mode+ :data-type :html :alternate-extensions (:stm)
+                :url-class url:http-template-object :no-methods (:export :header :document))
+   (:text-file :text (:text :plain :charset :iso-8859-1) :copy-mode #.+standard-text-copy-mode+
+-              :alternate-extensions (:txt :lisp :c :h :sh :script))
++              :alternate-extensions (:txt :lisp :asd :c :h :sh :script))
+   (:lisp-file :lisp (:text :plain :charset :iso-8859-1) :copy-mode #.+standard-text-copy-mode+
+               :alternate-extensions (:lsp :cl :asd) :data-type :lisp)
+   (:sgml-file :sgml (:text :sgml) :copy-mode #.+standard-text-copy-mode+ :data-type :html)
+diff -ru /cl-http/server/sha.lisp cl-http/server/sha.lisp
+--- /cl-http/server/sha.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/sha.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -549,6 +549,7 @@
+   (:documentation "Returns a function that will pop the next byte off a character stream."))
+ 
+ (defmethod character-stream-get-byte-reader (stream)
++  (declare (inline read-char))
+   (flet ((get-byte-from-char ()
+            (let ((char (read-char stream nil nil)))
+              (when char
+@@ -582,6 +583,7 @@
+   (:documentation "Returns a function that will pop the next byte off a binary stream."))
+ 
+ (defmethod binary-stream-get-byte-reader (stream)
++  (declare (inline read-byte))
+   (flet ((get-byte-from-char ()
+            (read-byte stream nil nil)))
+     #'get-byte-from-char))
+@@ -642,6 +644,7 @@
+ ;; this should be specialized by different platforms to perform this operation
+ ;; in a buffer oriented manner.   9/30/96 -- JCMa.
+ (defmethod sha-mac-encode ((key integer) (pathname pathname) &key (element-type '(unsigned-byte 8)))
++  (declare (inline read-char read-byte))
+   (with-open-file (stream pathname :direction :input
+                           :element-type element-type :if-does-not-exist :error)
+     (flet ((get-byte-from-char ()
+diff -ru /cl-http/server/shtml.lisp cl-http/server/shtml.lisp
+--- /cl-http/server/shtml.lisp	2006-03-23 01:14:14.000000000 +1100
++++ cl-http/server/shtml.lisp	2006-03-23 21:34:51.000000000 +1100
+@@ -41,11 +41,12 @@
+ (defun shtml-action-name (shtml-function-name)
+   (declare (values shtml-action-string))
+   (%shtml-action-name-string (symbol-name shtml-function-name) #.(length +shtml-function-prefix+)))
++(defun fbound-symbol-p (obj) (and (symbolp obj) (fboundp obj)))
+ 
+ (define register-shtml-action (shtml-function)
+   "Registers SHTML-FUNCTION for server-parsed HTML.
+ SHTML-FUNCTION must be an fbound symbol."
+-  (check-type shtml-function (and symbol (satisfies fboundp)))
++  (check-type shtml-function (satisfies fbound-symbol-p))
+   (let ((action (shtml-action-name shtml-function)))
+   (setf (gethash action *shtml-action-table*) shtml-function)
+   (push-ordered shtml-function *shtml-actions* #'string<)
+@@ -178,7 +179,8 @@
+ 
+ #-Genera
+ (defmethod parse-shtml-template (pathname)
+-  (declare (values template-parameters))
++  (declare (values template-parameters)
++	   (inline read-byte))
+   (labels ((char-to-ascii (char) (char-code char))      ;UNIX, Win32
+            (ascii-to-char (byte) (code-char byte))      ;UNIX, Win32
+            (string-to-8-bit-vector (string)
+diff -ru /cl-http/server/url.lisp cl-http/server/url.lisp
+--- /cl-http/server/url.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/url.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -84,14 +84,14 @@
+ 		  (search-url-form-encoding )
+   ((indicator :initarg :indicator :reader search-indicator)
+    (search-keys :initarg :search-keys 
+-		:reader #-(or Genera CMU) search-keys #+(or genera CMU) %search-keys))
++		:reader #-(or Genera CMU scl) search-keys #+(or genera CMU scl) %search-keys))
+   (:report (lambda (condition stream)
+ 	     (format stream "No value found for the search key, ~S, in search keys, ~S"
+ 		     (search-indicator condition) (search-keys condition)))))
+ 
+ ;; Make it a method because CMU-CL can't handle specialized slot accessor methods
+ ;; today (but the alpha devo system can), -- RJ 10/10/2003
+-#+(or Genera CMU)
++#+(or Genera CMU scl)
+ (defmethod search-keys ((search-url-form-value-not-found search-url-form-value-not-found))
+   (%search-keys search-url-form-value-not-found))
+ 
+@@ -497,7 +497,7 @@
+ 	   (values host nil))
+ 	  (t (cond (*qualify-unqualified-domain-names*
+ 		    (values (http:qualify-domain-name host) nil))
+-		   #+(or Allegro CCL-5.0 LispWorks CMU SCL)
++ 		   #+(or Allegro CCL-5.0 LispWorks CMU scl)
+ 		   ((equalp host "localhost") (values host nil))
+ 		   (t (error 'bad-host-name-specification :host host
+ 			     :url-string (maybe-trim-url-string url-string start end))))))))
+diff -ru /cl-http/server/utils.lisp cl-http/server/utils.lisp
+--- /cl-http/server/utils.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/utils.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -403,9 +403,10 @@
+ 
+ (defun write-downcase-string (string &optional (stream *standard-output*) (start 0) (end (length string)))
+   "Writes string to stream converting all upper case characters to lower case."
++  (declare (inline write-char))
+   (loop for idx upfrom start below end
+         for char = (char string idx)
+-        do (write (char-downcase char) :stream stream)))
++        do (write-char (char-downcase char) stream)))
+ 
+ (declaim (inline nfill-array))
+ 
+@@ -832,7 +833,7 @@
+ 
+ ;; Initialize the idle http process scavenger
+ ;; This is a key feature for production servers and a security feature.
+-#-CMU
++#-(or CMU scl)
+ (add-initialization
+   "Synchronize Idle Connection Scavenger"
+   '(www-utils::synchronize-idle-http-process-scavenger)
+@@ -1177,6 +1178,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod stream-copy-until-eof (from-stream to-stream &optional (copy-mode :text))
++  (declare (inline read-byte write-byte))
+   (ecase copy-mode
+     (:text
+       (with-text-stream  (from-stream :input)
+@@ -1234,6 +1236,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod advance-input-buffer (stream &optional delta)
++  (declare (inline read-byte))
+   (with-binary-stream (stream :input)
+     (if delta
+         (dotimes (i delta)
+@@ -1261,6 +1264,7 @@
+ ;; away.  If we could copy out of the input buffer chunks at a time, that
+ ;; would be much better.   7/26/95 -- JCMa.
+ (defmethod crlf-stream-copy-into-string (stream &optional n-bytes (start 0) string &aux size)
++  (declare (inline read-char))
+   (flet ((make-the-string (size fill-pointer)
+ 	   (make-array size :fill-pointer fill-pointer :adjustable t :element-type *standard-character-type*))
+ 	 (adjust-the-string (string size fill-pointer)
+@@ -1314,6 +1318,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod stream-decode-crlf-bytes (from-stream to-stream n-bytes)
++  (declare (inline read-byte write-char))
+   (with-crlf-stream (from-stream :input)
+     (with-text-stream (to-stream :output)
+       (loop with at-cr-p
+@@ -1354,6 +1359,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod stream-encode-crlf-until-eof (from-stream to-stream)
++  (declare (inline write-byte))
+   (using-resource (line-buffer line-buffer *line-buffer-size*)
+     (loop with line and eof and delimiter and length
+ 	  do (multiple-value-setq (line eof delimiter length)
+@@ -1728,6 +1734,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod stream-copy-byte-range (from-stream to-stream start end)
++  (declare (inline read-byte write-byte))
+   (cond ((file-position from-stream start)
+          (with-binary-stream (to-stream :output)
+            (loop for bytes upfrom start below end
+@@ -1742,6 +1749,7 @@
+ 
+ ;; ports should specialize this for high performance.
+ (defmethod stream-copy-bytes (from-stream to-stream n-bytes &optional (copy-mode :binary))
++  (declare (inline read-byte write-byte read-char write-char))
+   (ecase copy-mode
+     ((:binary :crlf)
+      (loop for bytes upfrom 0
+@@ -1782,6 +1790,7 @@
+ If N-BYTES is NIL, this copies bytes until EOF."))
+ 
+ (defmethod binary-stream-copy-into-8-bit-array (stream n-bytes &optional (start 0) 8-bit-array &aux size)
++  (declare (inline read-byte))
+   (flet ((make-the-array (size fill-pointer)
+            (make-array size :fill-pointer fill-pointer :adjustable t :element-type '(unsigned-byte 8)))
+          (adjust-the-array (array size fill-pointer)
+@@ -1827,7 +1836,8 @@
+ FROM-ARRAY must a one dimensional array of 8 bit bytes and have a fill pointer."))
+ 
+ (defmethod binary-stream-copy-from-8-bit-array (from-array stream &optional (start 0) end)
+-   (declare (fixnum start))
++   (declare (fixnum start)
++	    (inline write-byte))
+    (with-fast-array-references ((from-array from-array array))
+        (loop for idx fixnum upfrom start below (the fixnum (or end (length from-array)))
+                 do (write-byte (aref from-array idx) stream))))
+@@ -2008,7 +2018,8 @@
+ 							  &aux (max-bytes *mime-multipart-block-maximum-size*) (total-bytes 0))
+   (declare (values last-block-p)
+ 	   (ignore buffer)
+-	   (integer total-bytes))
++	   (integer total-bytes)
++	   (inline read-byte write-byte))
+   (macrolet ((binary-char-code (char)
+ 	       (typecase char
+ 		 (#.*standard-character-type* #+Genera (si:ascii-code char) #-Genera (char-code char))
+@@ -2125,6 +2136,7 @@
+ Ports and applications may specialize this method to optimize data transfer rates."))
+ 
+ (defmethod write-vector (stream (vector vector) &optional (start 0) (end (length vector)))
++  (declare (inline write-byte))
+   (with-fast-array-references ((v vector vector))
+     (loop for idx upfrom start below end
+           do (write-byte (aref v idx) stream)))
+@@ -3130,9 +3142,9 @@
+ ;              (setf (aref string 0) (read-char stream)
+ ;                    (aref string 1) (read-char stream))
+ ;              (let ((char (code-char (parse-integer string :radix 16 :start 0 :end 2))))
+-;                (cond ((char-equal char #\Š) #\Return)       ;handle weird char UNIX MOSAIC substitutes for 
+-;                      ((char-equal char #\) #\Return)       ;macweb lossage for CR in forms.
+-;                      ((char-equal char #\‰) #\tab)     ;Macweb sends tabs as ‰  10/2/94.
++;                (cond ((char-equal char #\ÂŠ) #\Return)       ;handle weird char UNIX MOSAIC substitutes for 
++;                      ((char-equal char #\Â) #\Return)       ;macweb lossage for CR in forms.
++;                      ((char-equal char #\Â‰) #\tab)     ;Macweb sends tabs as Â‰  10/2/94.
+ ;                      (t char)))))))
+ ;    (declare (inline decode-escaped-char))
+ ;    (let ((char (read-char stream eof-errorp eof-value)))
+@@ -3140,7 +3152,7 @@
+ ;            (values nil 1))
+ ;           ((char-equal char #\+)
+ ;            (values #\space 1))
+-;           ((char-equal char #\)            ;Macweb loses with    10/2/94.
++;           ((char-equal char #\Â)            ;Macweb loses with Â   10/2/94.
+ ;            (values #\Return 1))
+ ;           ((char-equal char *escape-character*)       ;escape character
+ ;            (values (decode-escaped-char stream) 3))
+@@ -3154,6 +3166,7 @@
+ Specialize this method for higher performance on specific platforms."))
+ 
+ (defmethod read-translated-char (stream delimiter &optional (eof-errorp t) eof-value)
++  (declare (inline read-char))
+   (flet ((decode-escaped-char (stream)
+            (let ((string (make-string 2)))
+              (declare (dynamic-extent string))
+@@ -3216,6 +3229,7 @@
+ 		    (write-string string stream :start s :end end)))))
+ 
+ (define escaping-special-chars (in-stream out-stream)
++  (declare (inline read-char))
+   (loop for char = (read-char in-stream nil)
+         while char
+         when (escaped-character-p char)
+@@ -3223,6 +3237,7 @@
+         else do (write-char char out-stream)))  ;return char
+ 
+ (define unescaping-special-chars (in-stream out-stream &optional only-safe-characters-p)
++  (declare (inline read-char))
+   (flet ((escape-char (char out-stream)
+            (let ((digit-chars (escape-character char 'cons)))
+              (declare (dynamic-extent digit-chars))
+@@ -3250,7 +3265,7 @@
+           when (escape-character-p char)
+             do (let ((nchar (unescaped-char in-stream)))
+                  #+ignore                       ;removed kludge for mac-mosaic   8/31/95 -- JCMa.
+-                 (unless (member nchar '(#\) :test #'char=)  ;lose random termination char from MAC Mosaic
++                 (unless (member nchar (list (code-char #o215)) :test #'char=)  ;lose random termination char from MAC Mosaic
+                    (write-char nchar out-stream))
+                  (if (and only-safe-characters-p (uri-reserved-or-unsafe-char-p nchar))
+                      (escape-char nchar out-stream)
+@@ -3541,7 +3556,8 @@
+ (let ((str "http://www.foo.%6eet/%7ecvince/cgi%3fbar%3da%2bb%26baz%3dc%2bd"))
+   (values str
+           (string-unescape-special-chars str 0 (length str) nil)
+-          (string-unescape-special-chars str 0 (length str) t)))|#
++          (string-unescape-special-chars str 0 (length str) t)))
++|#
+ 
+ ;;;-------------------------------------------------------------------
+ ;;;
+@@ -3823,6 +3839,7 @@
+ ;;;
+ 
+ (define clear-white-space (stream)
++  (declare (inline read-char peek-char))
+   (loop for char = (and (listen stream)
+                         (peek-char nil stream nil))
+         while char                              ;clear any dangling White Space due to buggy clients.
+@@ -3837,6 +3854,7 @@
+ Ports can specialize this as necessary for their stream and process implementations."))
+ 
+ (defmethod http-input-data-available-p (stream &optional timeout-seconds)
++  (declare (inline read-char peek-char))
+   (labels ((data-available-p (stream)
+              (loop for char = (when (listen stream)
+                                 (peek-char nil stream nil))
+@@ -3944,6 +3962,7 @@
+ (define print-integer (integer &optional (stream *standard-output*) (radix 10))
+   "Returns a list of characters required to print the INTEGER.
+ No minus sign is provided for negative integers."
++  (declare (inline write-char))
+   (let ((buffer (make-array 2 :element-type *standard-character-type* :adjustable t :fill-pointer 0)))
+     (declare (dynamic-extent buffer))
+     (with-fast-array-references ((buffer buffer string))
+@@ -4317,7 +4336,8 @@
+ so that the calling client will get the values back.
+ writes an alist of returned values to stream without consing.
+ call this with alternating pairs of keyword value."
+-  (declare (dynamic-extent args))
++  (declare (dynamic-extent args)
++	   (inline write-char))
+   (loop initially (write-char #\( stream)
+         for (keyword value) on args by #'cddr
+         do  (write-string "(" stream)
+@@ -4379,7 +4399,8 @@
+    Assumes stream is positioned at beginning of gif data.
+    For invalid GIF data, when ERROR-P it throws an error, otherwise
+      it returns null values."
+-  (declare (values height width gif-image-p))
++  (declare (values height width gif-image-p)
++	   (inline read-byte))
+   (let ((startpos (file-position stream))
+         (test-header (make-array 6 :element-type *standard-character-type*))
+         (image-descriptor-found nil))
+@@ -4460,7 +4481,8 @@
+ (define jpeg-image-size (stream &optional (error-p t) &aux (file-length (file-length stream)))
+   "Returns WIDTH and HEIGHT for JPEG encountered in data stream. 
+    Assumes stream is positioned at beginning of JPEG data."
+-  (declare (values height width jpeg-image-p))
++  (declare (values height width jpeg-image-p)
++	   (inline read-byte))
+   (labels ((read-two-bytes (stream)
+              (+ (ash (read-byte stream nil nil) 8)
+                 (read-byte stream nil nil)))
+@@ -4595,6 +4617,7 @@
+    (write-string item stream)) 
+ 
+ (defun %fast-format-execute-command (idx format-string stream arg-n args length &aux base-p)
++  (declare (inline write-char))
+     (macrolet ((pop-arg (args)
+                  `(prog1 (pop ,args)
+                          (incf arg-n)))
+@@ -4630,6 +4653,7 @@
+         base-p)))
+ 
+   (defun %build-fast-format-code (stream format-string format-args)
++    (declare (inline write-char))
+     (check-type format-string string)
+     (check-type format-args list)
+     (let ((len (length format-string))
+@@ -4873,6 +4897,7 @@
+     (setf (fill-pointer string) 0)
+     (with-output-to-string (stream string)
+       (funcall continuation stream)
++      (finish-output stream)
+       (if (find #\~ string :test #'eql)
+ 	  (www-utils:notify-log-window "~A" string)
+ 	  (www-utils:notify-log-window string)))))
+diff -ru /cl-http/server/variables.lisp cl-http/server/variables.lisp
+--- /cl-http/server/variables.lisp	2006-08-02 11:45:28.000000000 +1000
++++ cl-http/server/variables.lisp	2006-08-02 12:38:06.000000000 +1000
+@@ -188,8 +188,8 @@
+ (define-variable *http-package* (find-package :http))
+ 
+ (define-parameter *http-version*
+-  #+(or Genera MCL Franz-Inc LispWorks (and CMU mp)) "HTTP/1.1"
+-  #-(or Genera MCL Franz-Inc LispWorks (and CMU mp)) "HTTP/1.0")
++  #+(or Genera MCL Franz-Inc LispWorks (and CMU mp) scl) "HTTP/1.1"
++  #-(or Genera MCL Franz-Inc LispWorks (and CMU mp) scl) "HTTP/1.0")
+ 
+ (declaim (fixnum *http-version-length*))
+ 
+@@ -397,12 +397,12 @@
+ (defconstant *standard-character-type* 
+              #+(or Genera ACLPC) 'character
+              #+MCL (symbol-value 'ccl:*default-character-type*)
+-             #+(or Allegro Lucid CMU (and LispWorks (not LispWorks3.2))) 'base-char
+-             #-(or Genera Allegro ACLPC MCL (and LispWorks (not LispWorks3.2)) Lucid CMU) 'base-character)
++             #+(or Allegro Lucid CMU scl (and LispWorks (not LispWorks3.2))) 'base-char
++             #-(or Genera Allegro ACLPC MCL (and LispWorks (not LispWorks3.2)) Lucid CMU scl) 'base-character)
+ 
+ (define-constant +standard-text-copy-mode+
+   #+(or Genera MCL LispWorks-UNIX) :crlf
+-  #+(or Franz-Inc LispWorks-PC Lucid CMU) :text
++  #+(or Franz-Inc LispWorks-PC Lucid CMU scl) :text
+   "Controls the HTTP copy mode for static files with MIME content type text.
+ Because this decision is made at compile time, the system must be recompiled.
+ 
+diff -ru /cl-http/server/vrml-1-0.lisp cl-http/server/vrml-1-0.lisp
+--- /cl-http/server/vrml-1-0.lisp	2006-03-23 01:14:14.000000000 +1100
++++ cl-http/server/vrml-1-0.lisp	2006-03-24 08:55:02.000000000 +1100
+@@ -117,15 +117,16 @@
+ (defconstant *invalid-node-name-characters* `(#\space #\' #\` #\" #\/ #\{ #\} #\# #\+ #\.))
+ 
+ (define valid-node-name-p (name) 
+-  (www-utils:with-fast-array-references ((string name))
+-    (when (digit-char-p (aref string 0))
+-      (return-from valid-node-name-p nil))
+-    (loop for idx upfrom 0 below (length string)
+-          for char = (aref string idx)
+-          unless (or (member char *invalid-node-name-characters* :test #'eql)
+-                     (char-bits char))
+-            return nil
+-          finally (return t))))
++  (and (stringp name)
++       (www-utils:with-fast-array-references ((string name))
++	 (when (digit-char-p (aref string 0))
++	   (return-from valid-node-name-p nil))
++	 (loop for idx upfrom 0 below (length string)
++	       for char = (aref string idx)
++	       unless (or (member char *invalid-node-name-characters* :test #'eql)
++			  (char-bits char))
++	       return nil
++	       finally (return t)))))
+ 
+ (deftype node-name ()
+   '(and string (satisfies valid-node-name-p)))
+@@ -140,7 +141,7 @@
+   (let ((pred-name (intern (concatenate 'string (symbol-name name) "-TYPE-P"))))
+     `(progn
+        (define ,pred-name (list)
+-         (every #'(lambda (item) (member item ',set)) list))
++         (and (listp list) (every #'(lambda (item) (member item ',set)) list)))
+        (deftype ,name ()
+          '(or (eql :all)
+               (member ,@set)
+@@ -296,9 +297,11 @@
+   (defvar *type-writer-method-alist* nil
+     "An alist of all the printing methods for various VRML types.")
+ 
++  (defun fbound-symbol-p (obj) (and (symbolp obj) (fboundp obj)))
++  
+   (defun %register-vrml-type-writer (type writer)
+     (check-type type keyword)
+-    (check-type writer (and symbol (satisfies fboundp)))
++    (check-type writer (satisfies fbound-symbol-p))
+     (let ((entry (assoc type *type-writer-method-alist*)))
+       (if entry
+           (setf (cdr entry) writer)
+diff -ru /cl-http/w3p/w3p-system.lisp cl-http/w3p/w3p-system.lisp
+--- /cl-http/w3p/w3p-system.lisp	2006-03-23 01:14:15.000000000 +1100
++++ cl-http/w3p/w3p-system.lisp	2006-03-25 19:21:08.000000000 +1100
+@@ -307,11 +307,11 @@
+   ;; kludge to get around meta-evaluating inherit-from, just grab what we need
+   ;; second style known to work for Allegro, should really make this portable sometime
+   (flet ((extract-name (backquote)
+-           #+(or MCL Genera Lispworks Lucid CMU)
++           #+(or MCL Genera Lispworks Lucid CMU scl)
+            (cond ((atom backquote) backquote)
+                  ((atom (cadadr backquote)) (cadadr backquote))
+                  (t (cadadr (second backquote))))
+-           #-(or MCL Genera Lispworks Lucid CMU)
++           #-(or MCL Genera Lispworks Lucid CMU scl)
+            (cond ((atom backquote) backquote)
+                  ((atom (caaadr backquote)) (caaadr backquote))
+                  (t (caaaar (second backquote))))))

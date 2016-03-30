@@ -1,0 +1,93 @@
+;;; -*- Mode: lisp; Syntax: ansi-common-lisp; Package: cl-user; Base: 10 -*-
+;;;
+;;; Copyright 2006, John C. Mallery. 
+;;; All rights reserved.
+;;;
+;;; 
+;;;------------------------------------------------------------------- 
+;;;
+;;; FTP PACKAGE
+;;;
+(in-package :cl-user)
+
+(defpackage ftp
+  (:use "WWW-UTILS" "COMMON-LISP")
+  (:import-from "HTTP"
+   ;; Classes
+   "PROPERTY-LIST-MIXIN"
+   ;; Conditions
+   "PROTOCOL-CONDITION"
+   ;; Variables
+   "*KEYWORD-PACKAGE*"
+   "*STANDARD-CHARACTER-TYPE*"
+   "*WHITE-SPACE-CHARS*"
+   ;; Operators
+   "%STRING-EQUAL"
+   "CHAR-POSITION"
+   "COPY-VECTOR-PORTION"
+   "CURRENT-TIME"
+   "FAST-FORMAT"
+   "HANDLER-CASE-IF"
+   "HTTP-INPUT-DATA-AVAILABLE-P"
+   "LIVE-CONNECTION-P"
+   "LOCAL-HOST-IP-ADDRESS"
+   "PARSE-COMMA-SEPARATED-HEADER"
+   "POSITION-IF*"
+   "POSITION-IF-NOT*"
+   "SEND-CR-LINE-FEED"
+   "STREAM-COPY-UNTIL-EOF"
+   "TOKENIZE-EXPORTED-PATHNAME-EXTENSION"
+   "USING-RESOURCE"
+   "WHITE-SPACE-CHAR-P"
+   "WITH-STRING-TRIM-BOUNDS")
+  #+LispWorks
+  (:import-from "IPC"
+   "ACCEPT-CONNECTION"
+   "FTP-OPEN-STREAM"
+   "MAKE-PASSIVE-SOCKET"
+   "STREAM-INPUT-AVAILABLE-P")
+  #+MCL
+   (:import-from "CCL"
+   "ACCEPT-CONNECTION"
+   "FTP-CLOSE"
+   "FTP-OPEN-STREAM"
+   "MAKE-PASSIVE-SOCKET"
+   "STREAM-INPUT-AVAILABLE-P")  
+  (:export
+   ;; Class
+   "FTP-CONNECTION"
+   ;; Conditions
+   "FTP-ERROR"
+   "FTP-FILE-NOT-FOUND"
+   "FTP-NOT-LOGGED-IN"
+   "INVALID-FTP-CODE"
+   "PERMANENT-FTP-FAILURE"
+   "TRANSIENT-FTP-FAILURE"
+   ;; Variables
+   "*FTP-ALTERNATE-DATA-PORT*"
+   "*FTP-ALTERNATE-DATA-PORT-RANGE*"
+   "*FTP-DATA-OPEN-TIMEOUT*"
+   "*FTP-DEFAULT-PASSWORD*"
+   "*FTP-DEFAULT-USER-ID*"
+   "*FTP-TIMEOUT*"
+   ;; Macros
+   "FTP-FEATURE-CASE"
+   "WITH-FTP-CONNECTION"
+   ;; Operators
+   "FTP-APPEND-FILE"
+   "FTP-CHANGE-DIRECTORY"
+   "FTP-CONNECT"
+   "FTP-DELETE-DIRECTORY"
+   "FTP-DELETE-FILE"
+   "FTP-DIRECTORY-LIST"
+   "FTP-DIRECTORY-PLIST"
+   "FTP-DIRECTORY-P"
+   "FTP-FILE-INFO"
+   "FTP-FILE-SIZE"
+   "FTP-GET-FILE"
+   "FTP-MAP-DIRECTORY"
+   "FTP-MAP-DIRECTORY-PLIST"
+   "FTP-PUT-FILE"
+   "FTP-RENAME-FILE"
+   "FTP-SET-STANDARD-PORT"
+   "SET-STANDARD-FTP-PORT"))

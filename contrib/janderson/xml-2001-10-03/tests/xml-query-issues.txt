@@ -1,0 +1,54 @@
+
+a few things remain unclear about the XML Query language
+
+ContextDecl
+the query algebra semantic is not the same as the description.
+as rewritten, it is superfluous as the value is available as a normal variable
+binding.
+
+ElementConstructor
+do namespace attributes in the expressions have an effect on inscope namespaces?
+are namespace attributes permitted?
+
+
+the grammar is ambiguous in a numer of resepcts
+
+1. distinct(document("http://www.bn.com")//author) fails to parse by precedence
+a. if function application preceeds path expressions
+as the  //author is neglected
+b. if path expresions preceed applications as distinct is recognized as a path
+and the arguments are neglected.
+
+2. simple element construction demonstrated ambiguity between comparison
+expression and tag delimiters
+
+<book year = $b/@year> $b/title <chap/> </book>
+
+the attribute value is intended to be $b/@year , but the grammar allows
+$b/@year> $b
+
+the content is intended to be $b/title, but the grammar allows
+$b/title < chap.
+
+as the parser is exhaustive over the multiple values implied by alternative phrases, in most
+cases the intended parse is generated. there are, however, some cases where the grammar
+provides insufficient constraints and the precedence rules are difficult to apply.
+a. the sortby operator, which dominates all possible preceeding expressions.
+b. path steps which demonstrate various alternative breaks.
+
+
+3. the default namespace rule may be appropriate for element and attribute identifiers,
+but it seems ill advised for function names. it means that should a function be defined
+with the same local name in various spaces, a reference with no default declaration
+is ambiguous. better would be to specify explicitly that null default space for function
+names is a space "...something-xql..." and for element and attribute identifiers is "*", that
+is, the "wild" space.
+
+4. is (!= x y) == (not (== x y) or (not (= x y))
+
+5. the operators <, >, = strike me as ambiguous
+where < or > is used on two nodes, the ordinality is compared, but
+where = is used, the "value" is compared. it would seem better to have reserved '==' for
+value and kept = for identity, with the ordinality as the base.
+
+

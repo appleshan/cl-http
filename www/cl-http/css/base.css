@@ -1,0 +1,77 @@
+/* <!-- *-* Mode: text; *-* --> */
+
+/* Copyright 2005-2006, CL-HTTP Consortium. All rights reserved. */
+
+body {display: block; background-color: white; 
+      background-image: none; 
+      font-family: helvetica, sans-serif, Serif;}
+
+H1, H2, H3, H4, H5, H6 {color: #800000; 
+                        font-family: arial, helvetica, sans-serif, times;
+						font-weight: bolder;
+                        font-style: italic;}
+
+form {font-family: helvetica, sans-serif, serif;}
+
+a {font-family: helvetica, sans-serif, times;}
+a:link {color: #000080}
+a:visited {color:#003399}
+a:active {color: yellow}
+a:hover {color: orange}
+
+hr {border: 1px solid #000080; background-color: #000080;}
+
+/* Side Bar styling */
+
+div.sidebar {float:left; margin-top:10px;  margin-left: 3px; margin-right: 3px; width:155px; 
+             color: #000080; background-color: #CDCDCD; border: 1px solid #000080; font-size: smaller;}
+h3.sidebar {text-align: center;}
+
+/* Site Navigation inlining */ 
+
+/* object tag seems to work so no need for inline frames
+iframe.navigation {float:left; margin-top:10px;  margin-left: 3px; margin-right: 3px; width: 155px; height: 300px; 
+					color: #000080; background-color: #CDCDCD; border: 1px solid #000080; font-size: smaller;} */
+					
+object.navigation {float:left; margin-top:10px;  margin-left: 3px; margin-right: 3px; width: 155px; height: 320px; 
+					color: #000080; background-color: #CDCDCD; border: 1px solid #000080; font-size: smaller;}
+body.navigation {background-color: #CDCDCD; text-align: left; font-size: smaller;}
+h1.navigation {text-align: center; font-size: medium;}
+
+div.footer {text-align: center; font-style: italic; font-size: smaller;}
+
+div.header {text-align: center;}
+
+div.header-index {font-size: smaller; color: #000080;} 
+
+div.main-body {text-align: justify;}
+
+/* CL-HTTP system class elements used for directory listing and error reports */
+div.header.cl-http {text-align: left;}
+div.footer.cl-http {text-align: left;}
+body.cl-http {text-align: inherit}
+
+span.h3 {color: #800000; font-size: large; font-family: arial, helvetica, sans-serif, times; font-weight: bolder; font-style: italic;}
+span.h4 {color: #800000; font-size: medium; font-family: arial, helvetica, sans-serif, times; font-weight: bolder; font-style: italic;}
+
+ol.A {list-style-type: upper-alpha;}
+al.a {list-style-type: lower-alpha;}
+
+/* Frame title in documentation frame */
+div.frame-title {color: #800000; font-size: xx-large; font-weight: bold; font-style: italic;}
+
+/* SFelshin table style used in /cl-http/sources.html*/
+table.blue {border: 1px solid #000080; background-color: #B4CCF6; }
+tr.blue {background-color: #8EA6D0; }
+col.cl-http-source-type {text-align: center;}
+
+/* Standard table style used in /cl-http/downloads.html */
+table.cl-http {border: 1px solid #000080; color: #000080; background-color: #CDCDCD;}
+caption.cl-http {color: #800000; font-size: larger; font-weight: bolder; font-style: italic;}
+thead.cl-http {text-align: center; color: #000080; background-color: #999999; font-style: italic;}
+tbody.cl-http {text-align: center; }
+tr.cl-http {background-color:#A8A8A8;}
+
+blockquote.shell-commands {background-color: #CDCDCD; border: 1px solid #000080; font-family: Courier, MS Courier New, Prestige, Everson Mono;}
+blockquote.shell-output {background-color: #C0D9D9; border: 1px solid #000080; font-family: Courier, MS Courier New, Prestige, Everson Mono;}
+blockquote.lisp-code {background-color: #E9C2A6; border: 1px solid #000080; font-family: Courier, MS Courier New, Prestige, Everson Mono;}

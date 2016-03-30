@@ -1,0 +1,122 @@
+<!-- ;;;-*- Mode: text; Package: COMMON-LISP-USER -*- -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<link href="/cl-http/css/base.css" rel="stylesheet" title="master" type="text/css">
+  <title>CL-HTTP Proxy Service</title>
+</head>
+<body>
+<div class="header">
+<h1>CL-HTTP Proxy Service</h1>
+
+<div class="header-index">
+<a href="#relay">Proxy Relay</a> | <a href="#caching">Caching Proxy</a> | <a href="#reverse">Reverse Proxy</a> | <a href="#extensions">Extensions</a>
+</div>
+<hr>
+</div>
+<div.main-body>
+
+<table align="center" width="85%" border="0" cellspacing="0"
+ cellpadding="5" bgcolor="#cccccc">
+  <tbody>
+    <tr>
+      <td> <img src="/cl-http/icons/prism.gif" alt="Prism Image" align="left"
+ hspace="5"> CL-HTTP provides HTTP proxy service. Proxy functionality is integrated into the
+existing system architecture, so CL-HTTP may act as a proxy without interrupting normal server
+operations. When CL-HTTP receives a request for a remote resource, it may utilize the client module
+and relay the information to the client. Proxy access is controlled via a top-level switch as well
+as a list of allowed subnets. The current release also includes an caching proxy mode. Caching
+support is optional and is controlled by a separate server preference.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <a name="relay"> </a>
+  <h2><li><a name="relay"> Proxy Relay</a></li>
+  </h2>
+  <p><a name="relay"> Proxy relay (no caching) service can be provided for all standard HTTP/1.0 and
+HTTP/1.1 methods. The HTTP/1.0 PUT extension is not supported. Access to basic proxy services is
+controlled via </a><a
+ href="/cl-http/show-documentation?HTTP%3A*PROXY-SERVICE*">http:*proxy-service*</a> and <a
+href="/cl-http/show-documentation?HTTP%3A*PROXY-SUBNETS*">http:*proxy-subnets*</a>.  The proxy uses
+the standard CL-HTTP client to retrieve resources, and the default HTTP version used for making such
+requests is controlled by <a
+href="/cl-http/show-documentation?HTTP%3A*CLIENT-HTTP-VERSION*">http:*client-http-version*</a>.  The
+relay methods are HTTP/1.1 compliant, and discrepancies should be reported (or fixed!) when
+encountered. </p>
+
+  <hr>
+  <a name="caching"> </a>
+  <h2><li><a name="caching"> Caching Proxy</a></li>
+  </h2>
+
+<p><a name="caching">&nbsp;Proxy access to the caching routines is controlled via</a> <a
+ href="/cl-http/show-documentation?HTTP%3A*PROXY-CACHING-P*">http:*proxy-caching-p*</a>.  The
+current version of the cache uses in-memory data structures to store meta-information about cached
+representations of resources, and the file-system to store their actual entities. The file
+HTTP:proxy;database.lisp illustrates how to define new database implementations. While the caching
+functionality is HTTP/1.1 compliant, yet it interoperates reasonably with HTTP/1.0 clients.</p>
+
+<p> If the proxy is currently loaded, you can view a list of the <a href="/cl-http/proxy/resource?">cached
+resources</a> on the server. The cache implements incremental and full garbage collection strategies
+that delete least recently accessed resources in order to stay within the limits specified by <a
+href="/cl-http/show-documentation?HTTP%3A*PROXY-CACHE-MAXIMUM-SIZE*">http:*proxy-cache-maximum-size*</a>
+and <a
+href="/cl-http/show-documentation?HTTP%3A*PROXY-CACHE-MAXIMUM-RESOURCES*">http:*proxy-cache-maximum-resources*</a></p>
+
+<hr>
+
+<h2><li><a name="reverse"> Reverse Proxy</a></li></h2>
+
+<p>The proxy has a reverse proxy capability as well. URLs can be exported that map to URL spaces on
+other servers. This capability is particular useful when providing HTTPS service for a back side
+server running ordinary HTTP, or for distributing work over several back side servers. See the
+documentation for <a href="/cl-http/show-documentation?HTTP%3AEXPORT-URL">http:export-url</a></p>
+
+<hr>
+  <h2><li><a name="extensions"> Extensions</a></li>
+  </h2>
+  <p><a name="extensions">This proxy is meant more as a platform for
+intelligent caching and collaboration research than a competitor for
+high-load corporate proxies. Several immediate oppurtunities present
+themselves.</a></p>
+  <p>
+  </p>
+  <dl>
+    <dt><a name="extensions"><b>Cache Prefetch</b>
+      </a></dt>
+    <dd><a name="extensions">The proxy cache can be used along with the
+      </a><a href="/cl-http/w4/w4.html">W4 Web Walker</a> to implement prefetch operations. <a
+href="/cl-http/sources/proxy/examples/prefetch.lisp">http:proxy;prefetch.lisp</a>
+ provides such an implementation.
+    </dd>
+    <dt><b>Collaborative Browsing</b>
+    </dt>
+    <dd>The proxy may be used to infer group browsing patterns and aid
+in resource discovery.
+    </dd>
+    <dt><b>Annotation</b>
+    </dt>
+    <dd>The cache may act as a platform for group annotation of
+resources.
+    </dd>
+    <dt><b>Intelligent Caching</b>
+    </dt>
+    <dd>CL-HTTP should provide an excellent environment for research in
+dynamic caching algorithms.
+    </dd>
+  </dl>
+</ol>
+</div>
+<hr>
+<div.footer>
+
+<address> <a href="http://web.mit.edu/cvince/">Christopher Vincent</a>
+<a href="mailto:Christopher_Vincent@nospam.alum.mit.edu">(Christopher_Vincent@nospam.alum.mit.edu)</a></address>
+<address> <a href="http://www.ai.mit.edu/people/jcma/jcma.html">John C. Mallery</a>
+(<a href="mailto:jcma@nospam.csail.mit.edu">jcma@nospam.csail.mit.edu</a>)
+</div>
+</body>
+</html>

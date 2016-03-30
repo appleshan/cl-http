@@ -1,0 +1,84 @@
+<html><head title='22.06.2001 01:13' /><body><hr />22.06.2001 01:13<br />[<a href='#base'>Base</a>] [<a href='#xqdm'>XQDM</a>] [<a href='#xparser'>XParser</a>] [<a href='#xpointer'>XPointer</a>] [<a href='#xquery'>XQuery</a>]<a name='base' /><hr /><h2>Base</h2><hr /><dl><dt>Version 0.907 (covers ........ - 20010605):</dt><dd><p><b>20010501</b><br />parsetable<br />
+   factored from XQDM model
+   <p />utils<br /> factored from XQDM model<p /></p><p><b>20010507</b><br />package<br />incorporated character class exports<p /></p><p><b>20010605</b><br />cllib<br />split-string<p />defsystem<br />
+   lispworks/ansi conformance<p />utils<br /> lispworks conformance<p /></dd><dt>Version 0.908 (covers 20010605 - 20010608):</dt><dd><p><b>20010608</b><br />defsystem<br />
+   CL-HTTP in ALLEGRO<p />parameters<br />added rfc1738<p /></dd><dt>Open (covers 20010608 - present):</dt><dd><p><b>20010611</b><br />utils<br />
+   with-http-stream to use location header to update the base uri<p /></p><p><b>20010617</b><br />package<br />moved parsetable to XML-UTILS<p /></p><p><b>20010618</b><br />parameters<br />*parsetable*<p />parsetable<br />xutils:*parsetable*<p /></p><p><b>20010621</b><br />package<br />exported xml serialization iterface<p />utils<br />support for file url hosts<p /></dd><hr /></dl><a name='xqdm' /><hr /><h2>XML Query Data Model</h2><hr /><dl><dt>Version 0.905 (covers ........ - 20010530):</dt><dd><p><b>19981017</b><br />xqdm-character-classes<br />
+   removed spurious #\return valued characters from the tables - must have come
+   from the cut-and-paste from the html texts. they were read as whitespace in
+   mcl, but allegro saw them as symbols<p /></p><p><b>19981027</b><br />xqdm-character-classes<br />
+   added class predicate for characters which require entity-encoding<p /></p><p><b>19990000</b><br />xqdm-classes<br />
+   this started as a minimal xml document model. to wit, from the original description:
+   
+    this is an absolutely minimal and nonconforming xml processor.
+    it reads the main document entity, skipping all processing
+    instructions, declarations, and definitions. it returns only the
+    single element in the document. it recognizes entities for <>&
+    and translates them on input and output. no other entites are
+    supported.
+    <p /></p><p><b>19990209</b><br />xqdm-classes<br />
+   jaa added attribute support
+   <p /></p><p><b>20010223</b><br />xqdm-classes<br />
+   comments, processing instructions and reified attributes
+   <p /></p><p><b>20010226</b><br />xqdm-classes<br />
+   changed names to symbols to support namespaces
+   <p /></p><p><b>20010301</b><br />xqdm-classes<br />
+    interface and classes changed to align with the query data model
+   <p /></p><p><b>20010308</b><br />xqdm-classes<br />
+   incorporated accessors and accommodated properties from the infoset.
+   note that
+   
+   no entity start or end nodes are modeled
+   the URI handling is incomplete.<p /></p><p><b>20010311</b><br />xqdm-character-classes<br />
+   changed the name character predicates to reflect the QName/NCName criteria and
+   eliminated the predicate for initial name characters, as the respective parser
+   defines a predicate for the appropriate character sequences.<p /></p><p><b>20010318</b><br />xqdm-conditions<br />
+   factoer out as a distinct file.<p />xqdm-operators<br />
+   factored out as separate file<p />xqdm-parameters<br /> collected into one file<p /></p><p><b>20010319</b><br />xqdm-character-classes<br />
+   NEL support<p /></p><p><b>20010323</b><br />xqdm-validation<br />
+   new<p /></p><p><b>20010412</b><br />xqdm-classes<br />
+   eliminated teh attribute slot from doc-node.<p /></p><p><b>20010416</b><br />xqdm-qnames<br />
+  
+  recognized static binding for "xml" namespace in ASSIGN-NAMSEPACE
+  changed prefix comparisons to symbol rather than string
+  
+  <p /></p><p><b>20010501</b><br />xqdm-classes<br />
+   factored out xml-encoding specific classes.<p />xqdm-operators<br />
+   factored separate file for xml parser<p />xqdm-parameters<br />factored out separate file for XML parser<p /></p><p><b>20010507</b><br />xqdm-character-classes<br />moved export to unified package file<p /></p><p><b>20010520</b><br />xqdm-classes<br />clone/copy-node to accept overriding initargs<p />xqdm-operators<br /> augmented find-id for use with xquery/xpath<p /></p><p><b>20010526</b><br />xqdm-operators<br />added sibling generators<p /></p><p><b>20010530</b><br />xqdm-classes<br />
+   REF-ENTITY needs to be a NAMED-NODE, in order to bind the target name<p />xqdm-parameters<br />
+   first combined version with xpath/xquery<p /></dd><dt>Version 0.909 (covers 20010530 - 20010611):</dt><dd><p><b>20010604</b><br />xqdm-classes<br />
+   model traversal moved her from xqdm-qnames<p />xqdm-qnames<br />
+   model traversal moved to xqdm-classes<p /></p><p><b>20010605</b><br />xqdm-character-classes<br />lispworks conformance<p />xqdm-classes<br />lispworks conformance<p /></p><p><b>20010611</b><br />xqdm-classes<br /> added |VC: No Duplicate Tokens|<p />xqdm-parameters<br /> added |VC: No Duplicate Tokens|<p /></dd><dt>Open (covers 20010611 - present):</dt><dd><p><b>20010616</b><br />xqdm-operators<br />added character method to value-string<p /></p><p><b>20010621</b><br />xqdm-operators<br />name for comment nodes<p /></dd><hr /></dl><a name='xparser' /><hr /><h2>XML Parser</h2><hr /><dl><dt>Version 0.905 (covers ........ - 20010530):</dt><dd><p><b>20010118</b><br />xml-tokenizer<br />initial version<p /></p><p><b>20010305</b><br />xml-constructors<br /><p />xml-printer<br /><p /></p><p><b>20010312</b><br />xml-readers<br />initial version<p /></p><p><b>20010328</b><br />xml-stream-coding<br />
+   adapted from version 0.4*<p /></p><p><b>20010410</b><br />xml-tokenizer<br />modified to work with an input ring-buffer which
+   holds character codes and intermediate tokenizing results.<p /></p><p><b>20010501</b><br />xml-operators<br />
+   factored out as separate file for xml parser<p />xml-parameters<br />
+   factored from as separate file for XML parser<p /></p><p><b>20010502</b><br />xml-processing-instruction<br /><p /></p><p><b>20010511</b><br />xml-printer<br />
+   separate WRITE-NODE and ENCODE-NODE functions.
+   the first acts as the interface and takes a stream arg. the second is
+   internal and expects bindings for the writer function.
+   <p /></p><p><b>20010530</b><br />xml-parameters<br />
+   first combined version with xpath/xquery<p /></dd><dt>Version 0.907 (covers 20010530 - 20010605):</dt><dd><p><b>20010603</b><br />xml-printer<br />
+   corrected (encode-node symbol) to permit uninterned names -> no prefix;
+   bind *document* in (write-node doc-node) for consistency parse/serialize.
+   <p /></p><p><b>20010605</b><br />xml-parameters<br />
+   Lispworks support<p />xml-stream-coding<br />
+   lispworks conformance<p />xml-vector-stream<br />
+   lispworks conformance<p /></dd><dt>Version 0.908 (covers 20010605 - 20010608):</dt><dd><p><b>20010608</b><br />xml-parameters<br />
+   CL-HTTP in ALLEGRO<p /></dd><dt>Open (covers 20010608 - present):</dt><dd><p><b>20010614</b><br />xml-constructors<br />added defaut encoding captured from input<p /></p><p><b>20010615</b><br />xml-parameters<br />added encoding alternatives vis *ENCODING-MAP*<p /></p><p><b>20010618</b><br />xml-parameters<br />xutils:*parsetable*<p />xml-parser<br />xutils:*parsetable*<p />xml-readers<br />xutils:*parsetable*<p />xml-tokenizer<br />xutils:*parsetable*<p /></p><p><b>20010621</b><br />xml-parser<br />
+   corrected *XML-BASE* bindings to follow 4.2.2 - that is to always rebind.
+   <p />xml-printer<br />WITH-XML-WRITER macro<p />xml-printer<br />
+   fixed spacing in attribute declarations
+   fixed encoding printing for doc-node<p />xml-stream-coding<br />added a method to encode UTF-8 for character streams<p /></dd><hr /></dl><a name='xpointer' /><hr /><h2>X Pointer</h2><hr /><dl><dt>Version 0.501 (covers ........ - 20010530):</dt><dd><p><b>20010118</b><br />xpath-tokenizer<br />initial version<p /></p><p><b>20010305</b><br />xpath-printer<br />
+   as yet no serialization<p /></p><p><b>20010318</b><br />xpath-parameters<br />initial version<p /></p><p><b>20010530</b><br />xpath-parameters<br />
+   first version of the parser / compiler combination<p /></dd><dt>Version 0.502 (covers 20010530 - 20010610):</dt><dd><p><b>20010602</b><br />xpath-operators<br />
+   added support for count to step generators.
+   count is generated incrementally, rather than collecting the set or traversing it in
+   advance. (with the exception of the parent axis.)
+   <p /></p><p><b>20010609</b><br />xpath-operators<br />typo in root generator<p /></p><p><b>20010610</b><br />xpath-operators<br />clos root and child generator, name test<p />xpath-parameters<br />clos access<p /></dd><dt>Open (covers 20010610 - present):</dt><dd></dd><hr /></dl><a name='xquery' /><hr /><h2>X Query</h2><hr /><dl><dt>Version 0.501 (covers ........ - 20010530):</dt><dd><p><b>20010227</b><br />xql-tokenizer<br />initial version, from the xpath tokenizer<p /></p><p><b>20010305</b><br />xq-printer<br /><p /></p><p><b>20010306</b><br />xql-parser<br />
+  
+   inline reduction
+   reader macro function
+  <p />xql-tokenizer<br />consolidated XQDM,XQ,XP<p /></p><p><b>20010318</b><br />xq-parameters<br /><p /></p><p><b>20010511</b><br />xql-tokenizer<br />literals now eturned as quoted list to distinguish them from names<p /></p><p><b>20010515</b><br />xql-constructors<br /><p /></p><p><b>20010530</b><br />xq-parameters<br />
+   first version of the parser / compiler combination<p /></dd><dt>Open (covers 20010530 - present):</dt><dd><p><b>20010605</b><br />xql-constructors<br />provisional results for FunctionLibrary<p /></p><p><b>20010612</b><br />xq-parameters<br />token variations for 20010607 version<p />xql-parser<br />parser recursion controls now per term<p />xql-tokenizer<br />
+   WD-xquery-20010607: metasymbol variations
+   WD-xquery-20010607: context-dependent tokenization<p /></p><p><b>20010618</b><br />xq-parameters<br />xutils:*parsetable*<p />xql-parser<br />xutils:*parsetable*<p />xql-tokenizer<br />xutils:*parsetable*<p /></dd><hr /></dl><hr /></body></html>

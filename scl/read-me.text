@@ -1,0 +1,250 @@
+April 2006, updated December 2008
+
+           Installing CL-HTTP on the Scieneer Common Lisp
+           ----------------------------------------------
+
+1. Requirements
+
+CL-HTTP requires the Scieneer CL 1.3.8 release or later.
+
+The latest release of CL-HTTP may be obtained from:
+
+    http://www.cl-http.org:8001/
+
+
+(2. Patching the CL-HTTP source)
+
+Update, December 2008: patching CL-HTTP is no longer necessary. The patches are
+already applied to the sources.
+
+;There are a number of patches to CL-HTTP that are required to support
+;the Scieneer CL.  These patches need to be applied before compiling.
+;After un-taring the source, change to the cl-http directory and apply
+;these patches:
+
+;cd cl-http
+;patch -p1 < scl/cl-http-patches.text
+
+
+3. Quick start
+
+3.1 Download and load the ASDF system definition library.
+
+ASDF for SCL is available in the Scieneer web site freeware collection.
+
+#-asdf (load "asdf")
+
+3.2 Set the CL-HTTP source path
+
+Add the CL-HTTP source path to the ASDF registry:
+(push #p"/<path>/cl-http/scl/" asdf:*central-registry*)
+
+3.3 Compile and load
+
+(asdf:oos 'asdf:load-op :cl-http-server)
+
+3.3 Configure and load the examples
+
+The default configuration is a good start, but if you need to use a differenet
+http port then edit cl-http/examples/configuration.lisp.  The port is set by
+the function 'set-standard-http-port and defaults to 8000.
+
+(asdf:oos 'asdf:load-op :cl-http-examples)
+
+3.4 Give it a try
+
+Start the HTTP port listener:
+(http:enable-http-service)
+
+Startup a web browser and visit: http://localhost:8000/
+
+There is extensive documentation and examples to browse through.
+
+
+4. Options: client, proxy, web walker, html-parser and examples.
+
+The 'cl-http system definition will load the supported options, or they can be
+loaded separately.
+
+(asdf:oos 'asdf:load-op :cl-http-client)
+(asdf:oos 'asdf:load-op :cl-http-proxy)
+(asdf:oos 'asdf:load-op :cl-http-w4-web-walker)
+(asdf:oos 'asdf:load-op :cl-http-w4-web-walker-demo)
+(asdf:oos 'asdf:load-op :cl-http-html-parser)
+
+There is a Lisp listener in the examples which may be of interest. This is not
+exported by default as it may be a security risk, see examples/listener.lisp.
+It would be wise to use the SSL certificate based authentication for
+connections to the Lisp listener and it could be useful to export it on a
+higher priority port, see below for port configuration.
+
+Note that Lambda-Vista is currently broken but was working at one point before
+the code became rather lisp machine specific. This package adds keyword
+searching to exported URLs, and the automatic indexing of exported URLs can be
+enabled via *lambdavista-index-on-export*, see
+lambda-ir/examples/lambdavista-exports.lisp. This will adds about 6 minutes to
+the load time (P133), but it's a handy feature allowing instant keyword
+searches of exported html and text files.
+
+To run some of the examples you need a Webmaster password (see
+examples/configure.lisp):
+
+E.g.
+(http:save-authentication-object
+  (http:intern-user :server "Webmaster"
+               :password "password"
+	       :groups '("Webmasters")
+               :email-address http:*bug-http-server*))
+
+The CL-HTTP documentation recommends the random seed be initialised few times
+by calling: (http:digest-authentication-random-seed t)
+
+
+5. Saving a lisp core
+
+A lisp core image including CL-HTTP can be saved by calling
+'www-utils::save-cl-http with the core file name.
+
+When saving a core including CL-HTTP it is important to load the systems while
+only one thread is running because SCL does not support saving and restarting
+threads and remnant threads could cause problems.
+
+When a core is saved with configuration information and exported URLs, and
+restarted on a different host, it may be possible to update the parameters by
+loading examples/configuration.lisp and using url:remap-url-host to remap
+local URLs from the old to the new host.  However it is probably simpler to
+save the core without any URLs exported, and thus without any of the examples
+loaded which can be achieved by no loading the systems 'cl-http-examples and
+'cl-http-w4-web-walker-demo
+
+When a CL-HTTP core is saved, a new command line switch named cl-http-init, is
+defined which allows an initialisation file to be loaded upon startup. By
+default the scl/examples/cl-http-init.lisp file is loaded which loads the demo
+examples, and enables HTTP service. This example initialisation can be easily
+modified, see cl-http-initialise at the end of scl/server/unix.lisp.
+
+For example:
+- Compile cl-http with the desired options, possibly including the examples.
+- Restart SCL and load the redired systems, without the examples.
+- Save the core: (www-utils::save-cl-http "cl-http.core").
+- Restart the new core requesting the default initialisation file be loaded:
+  lisp -core cl-http.core -cl-http-init
+
+
+6. Production configuration
+
+Once you are ready to open up your server to production level loads, you can
+improve server performance by making the following changes to your version of
+examples/configuration.lisp:
+
+Disable Log Domain Resolution: Set the variable
+  http:*log-resolve-ip-addresses* to 'nil or your machine will be bogged down
+  trying to resolve client domain names.
+
+Disable Log Notifications: Turn off log notifications on the console with
+  http:log-notifications-on.
+
+Tune Simultaneous Connections: Adjust the number of simultaneous connections
+  that you allow with http:set-maximum-number-of-connections.
+
+Enable Email Interface: Set the variable smtp:*network-mail-host* to the
+  primary store-and-forward mail host at your site.  This will enable
+  automatic bug reporting via www-utils:report-bug and allow response
+  functions to send email during www-utils:send-mail-from.  Set the variables
+  http:*server-maintainer* and http:*server-bug-list* to the local maintainer.
+
+
+7. Customizing port listeners
+
+7.1  Defining port listener parameters
+
+The SCL backend of CL-HTTP provides an extension to allow the parameters of
+port listeners to be specified.
+
+  (http:define-http-service &key address port backlog reuse-address priority
+			         timeout life-time)
+
+  (http:define-https-service &key address port backlog reuse-address priority
+				  timeout life-time
+				  certificate private-key
+				  verify verify-depth
+				  password parameters
+				  ciphers
+				  certificate-authorities)
+
+These parameters are passed through to 'ext:create-inet-listener and the SSL
+parameters are used when opening an HTTPS stream.  The priority is passed to
+thread:queue-task.  The parameter come into effect when new listeners on the
+'port are started.  Call (http:enable-http-service :on-ports :all) to restart
+listeners on all defined ports.
+
+7.2 Task queue
+
+All requests are quened in a task queue and handled in order by a pool
+of threads.  This allows bounds to be placed on system resources, and
+avoids the overhead of create a new thread for each connection.  A
+default task queue is create in scl/server/tcp-interface.lisp.
+
+Multiple priority levels can be enabled within the queue.  All requests
+at a higher priority are executed before lower priority request.  This
+feature is useful for an admin connection and may have other utility.
+Four priority levels are define by default.  See the SCL task queue
+documentation for more information.
+
+7.3  Secure Socket Layer (SSL) Configuration
+
+See the SCL documentation on the SSL library for detail information.  For a
+basic web site with a SSL certificate the following may be adequate.
+
+(http:define-https-service
+  :port 443
+  :priority 1 ; May want to run at higher priority (lower number).
+  :certificate "/<path>/certificate.crt"
+  :private-key  "/<path>/certificate.key" ; May be the same file as above.
+  :verify :never
+  :verify-depth 1)
+
+For certificate based authentication, the following may be used:
+
+(http:define-https-service
+  :port 8443
+  :priority 0 ; Run at the highest priority, useful for admin connections.
+  :certificate "/<path>/certificate.crt"
+  :private-key  "/<path>/certificate.key" ; May be the same file as above.
+  :verify :always
+  :verify-depth 1)
+
+If you are using certificates that your organization has self signed then a
+SSL context will need to be initialized as follows.  This will be necessary
+if using a self signed certificate for testing purposes.
+
+(http:define-https-service
+  :port 8443
+  :priority 0 ; Run at the highest priority, useful for admin connections.
+  :certificate "/<path>/certificate.crt"
+  :private-key  "/<path>/certificate.key" ; May be the same file as above.
+  :verify-mode :require
+  :verify-depth 1
+  ;;
+  :password "password"
+  :certificate-authorities "/<path>/cacert.pem")
+
+After defining the new lister port, the listeners may be started by calling:
+(http:enable-http-service)
+
+Secure https URLs may be export by fully qualifying the URL when exporting,
+or by changing the default scheme and port before exporting.  For example:
+
+(http:set-standard-http-port 443 :https)
+
+
+8. Support
+
+For more information please contact Scieneer Pty Ltd at:
+http://www.scieneer.com/contact.html
+
+
+Regards
+Douglas Crosher
+
+Scieneer Pty Ltd

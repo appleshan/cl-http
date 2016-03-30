@@ -1,0 +1,205 @@
+#VRML V1.0 ascii
+
+
+Separator {
+Separator {
+Translation {
+  translation 0.0 0.0934818 0.0
+}
+Cube {
+  height 0.1869636
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 0.0 1.2488977 1.0
+}
+Cube {
+  height 2.4977953
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 0.0 1.3662097 2.0
+}
+Cube {
+  height 2.7324195
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 0.0 1.2675517 3.0
+}
+Cube {
+  height 2.5351033
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 1.0 1.6482797 0.0
+}
+Cube {
+  height 3.2965593
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 1.0 1.1844255 1.0
+}
+Cube {
+  height 2.368851
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 1.0 0.6110127 2.0
+}
+Cube {
+  height 1.2220254
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 1.0 1.4858769 3.0
+}
+Cube {
+  height 2.9717538
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 2.0 0.010211504 0.0
+}
+Cube {
+  height 0.020423008
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 2.0 1.8382752 1.0
+}
+Cube {
+  height 3.6765504
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 2.0 0.57946414 2.0
+}
+Cube {
+  height 1.1589283
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 2.0 1.2464241 3.0
+}
+Cube {
+  height 2.4928482
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 3.0 0.92314893 0.0
+}
+Cube {
+  height 1.8462979
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 3.0 1.8585926 1.0
+}
+Cube {
+  height 3.7171853
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 3.0 1.5484302 2.0
+}
+Cube {
+  height 3.0968604
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 3.0 1.4232373 3.0
+}
+Cube {
+  height 2.8464746
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 4.0 1.5396065 0.0
+}
+Cube {
+  height 3.079213
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 4.0 1.2199117 1.0
+}
+Cube {
+  height 2.4398234
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 4.0 1.1812419 2.0
+}
+Cube {
+  height 2.3624837
+  width 0.6
+  depth 0.6
+}
+}
+Separator {
+Translation {
+  translation 4.0 1.2386433 3.0
+}
+Cube {
+  height 2.4772866
+  width 0.6
+  depth 0.6
+}
+}
+}

@@ -1,0 +1,358 @@
+2000-05-03  Sunil Mishra  <smishra@everest.com>
+
+	* html-tags.lisp: Substantial changes relating to the changes in
+	handling entities, among others. Functions for cleaning up
+	parameter entities (clear-parameter-entities and clear-pero-cache)
+	have been defined. These functions have been substituted with
+	non-functional stubs in the cl-http distribution, as there is no
+	token mapping function available. tokenize-sgml-expression and
+	substitute-html-entities have been replaced by
+	tokenize-names-for-definition and %tokenize-names-for-definition,
+	a pair of functions that replace all (non keyword) symbols with
+	name tokens and all strings with entity tokens. This general
+	approach is not always appropriate, for example, while handling
+	the default value form of an attribute where a string literal is a
+	valid default. The task of constructing an html element definition
+	form has now been redistributed to define-html-element and
+	make-html-element-form. define-html-entity has been rewritten. All
+	of these changes should be invisible to a user, except for the
+	handling of entity values.
+
+	* html-reader.lisp: parse-html-entity now uses entity-definition
+	instead of html-entity-p to test for defined entities.
+
+	* html-parser.lisp: Initialization now calls a function to compile
+	the DTD, which also cleans up parameter entities in the defined
+	entity tokens.
+
+	* html-parser.html: Added and updated documentation.
+
+	* html-4-0-strict.lisp: Replaced symbols with entity names for
+	entities, and inserted an :or in the value list for attributes
+	with one possible value.
+
+	* html-4-0-frameset.lisp: Replaced symbols with entity names for
+	entities, and inserted an :or in the value list for attributes
+	with one possible value.
+
+	* html-3-2.lisp: Replaced symbols with entity names for entities,
+	and inserted an :or in the value list for attributes with one
+	possible value.
+
+	* html-2-0.lisp: Replaced symbols with entity names for entities,
+	and inserted an :or in the value list for attributes with one
+	possible value.
+	
+	* html-4-0-transitional.lisp: Replaced symbols with entity names
+	for entities, and inserted an :or in the value list for attributes
+	with one possible value.
+
+	* packages.lisp: Updated exports list.
+
+	* defs.lisp: Renamed (and redefined) parameter-entity-name-p to
+	parameter-entity-token-p. Also added methods for entity-definition
+	in keeping with the updates to the entity handling in the
+	DTD. Also reintroduced cl-http specific definitions for
+	intern-name-token and intern-entity-token.
+
+	* examples/handler.lisp: Loads and compiles correctly, but haven't
+	tested it.
+
+	* examples/parser-show-link-map.lisp: Can't verify if it's working.
+
+2000-04-30  Sunil Mishra  <smishra@everest.com>
+
+	* html-parser.lisp: Renamed ignore-exits to *ignore-exits*, and
+	ignoring-exits to without-exits.
+
+	* rewrite-rules.lisp: Changed ignore-exits to *ignore-exits*.
+
+2000-04-20  Sunil Mishra  <smishra@everest.com>
+
+	* packages.lisp: Removed dependencies on cl-http. Included package
+	property-list.
+
+2000-04-15  Sunil Mishra  <smishra@everest.com>
+
+	* html-parser.lisp: Fixed a bug in find-tag-container relating to
+	the interaction of inclusions/exclusions and PCDATA.
+
+2000-04-14  Sunil Mishra  <smishra@everest.com>
+
+	* html-tags.lisp: tag-attribute-definition is now more flexible.
+
+	* html-parser.lisp: Modified behavior of find-tag-container and
+	all functions affected to correctly handle implicitly opening
+	containers.
+
+2000-04-05  Sunil Mishra  <smishra@everest.com>
+
+	* html-parser.lisp: Significant clean up of make-context-transition.
+
+2000-04-04  Sunil Mishra  <smishra@everest.com>
+
+	* defs.lisp: Added modify-dtd-list, removed lsp references from
+	*html-dtd-list*.
+
+	* packages.lisp: Exported modify-dtd-list.
+
+	* html-utilities.lisp: Removed unnecessary test in attr-val.
+
+	* html-parser.lisp: Modified the behavior of %save-tag (and thus
+	of save in HTML parser contexts). Now it can take a null pd for a
+	tag instance and store it as a complete child structure. Also is
+	able to handle cases where the instance in the pd doesn't match
+	the tag instance. Also modified initialize-parser to allow full
+	pathnames associated with the doctype.
+
+	* html-reader.lisp: Modified parse-html-open-tag to pass parsed
+	attribute values to make-tag-instance.
+
+2000-02-23  Sunil Mishra  <smishra@everest.com>
+
+	* tokenizer.lisp: Deleted.
+	
+	* packages.lisp: Modifications relating to the tokenizer.
+
+	* html-utilities.lisp: Modifications relating to the tokenizer.
+
+	* html-tags.lisp: Modifications relating to the tokenizer.
+
+	* html-reader.lisp: Modifications relating to the tokenizer.
+
+	* html-parser.lisp: Modifications relating to the tokenizer.
+
+	* defs.lisp: Replaced the CL-HTTP tokenizer with the home-grown
+	one.
+	
+
+1999-12-04  Kaelin Colclasure  <kaelin@everest.com>	*** Rev 10.0-beta
+
+	* html-tags.lisp (most-general-tag): Changed selection algorithm.
+	The old algorithm for selecting a tag's default container simply
+	searched for the "most general" (e.g. closest to the document
+	root) tag which could contain the element -- it did not take the
+	:start-optional flags from the DTD into account. This heuristic
+	seems to have worked fairly well for the HTML DTDs, but not with
+	LSPs DTD. In particular, since just about anything can be wrapped
+	in an <FLET> in LSP, the #t"FLET" tag was being made the default
+	for things like <TR> -- whose other containers (e.g. <TBODY>,
+	etc.) are all marked :start-optional and are most commonly elided
+	from HTML document mark-up.
+
+	The new algorithm sets the default container to the most general
+	tag that's flagged :start-optional. This means that if there are
+	no :start-optional candidate tags, the default container is left
+	nil. Right now the code in #'open-tag blows past this by
+	arbitrarily using the first tag in the list of containers -- which
+	is not always the same tag chosen as the default by the old
+	algorithm.
+	
+1999-11-23  Kaelin Colclasure  <kaelin@everest.com>
+
+	* html-parser.lisp (define-html-parser): The function generated by
+	this macro no longer accepts the :html-tag-instance-class or
+	:unknown-tag-instance-class keyword arguments. Instead, it allows
+	a :make-tag-instance-fn argument, which must be a keyword function
+	compatible with the following (default) definition:
+	---8<---
+	(defun parser-make-tag-instance (&rest initargs
+					 &key instance-of &allow-other-keys)
+	  (let ((name (name instance-of)))
+	    (apply #'make-instance (if (eq name #t"UNKNOWN")
+				       'unknown-tag-instance
+				     'html-tag-instance)
+		   initargs)))
+	--->8---
+
+	The purpose of this change is to simplify the use of distinct
+	subclasses of 'html-tag-instance for different HTML elements. This
+	was possible before -- but you had to specialize #'make-instance,
+	which had significant performance ramifications.
+
+	Users who were taking advantage of the old feature can simply
+	cut-and-paste the function definition above -- renaming it and
+	replacing the class names as appropriate -- to get equivalent
+	behavior.
+
+	Sunil originally suggested the more sweeping approach of having
+	the DTD definition generate unique subclasses for every element it
+	defined. This struck me as a rather big hammer (not to mention a
+	lot of work). Certainly it would have added a lot of complexity to
+	my own LSP code base -- I only "specialize" behavior on a handful
+	of the scores of elements defined in the DTD.
+
+1999-11-19  Kaelin Colclasure  <kaelin@everest.com>
+
+	* html-utilities.lisp: Added a defsetf for #'attr-val. Dropped
+	#'return-if-not-whitespace, #'make-pcdata-string, and
+	#'ensure-html-parser-tokens plus some supporting code (these were
+	not used anywhere in the HTML-PARSER or CL-HTTP code bases outside
+	of the old HTML-PARSER examples subdirectory).
+
+1999-11-15  Kaelin Colclasure  <kaelin@everest.com>
+
+	* config/html.parser.system: Added Codex-style system definition
+	(requires MK:DEFSYSTEM).
+
+1999-10-17    <kaelin@everest.com>
+
+	* lsp-1-0.lisp (TABLE): Added :exclusions TR to work around a bug
+	uncovered when nesting a table in a form in a table [in an LSP
+	document]. The real root of this problem may be in the definition
+	of #'valid-content-p.
+
+	TODO: Figure out if this can be fixed with containment rules that
+	"take the algebra into consideration."
+
+1999-10-04    <kaelin@everest.com>			*** Rev 10.0-alpha
+
+	* lsp-1-0.lisp: Dropped the symlink and branched a copy of the LSP
+	DTD back into this directory. [The symlink was causing way too
+	much trouble on Win32.]
+
+1999-09-23    <kaelin@sherpa.everest.com>
+
+	* html-parser.lisp (close-tag): Fixed bug in the assigment of html
+	fragments to implicitly closed tags. The fragment erroneously
+	included the opening tag that caused the implicit close (ie. the
+	next tag in the input). The fix introduces a new optional
+	'implicit-p argument which is T whenever the tag is being
+	implicitly closed.
+
+	* packages.lisp: Exported several additional symbols from the
+	:html-parser package (all used by LSP).
+
+1999-09-20    <kaelin@sherpa.everest.com>
+
+	* html-reader.lisp (parse-html-attr-name-or-val): Fixed bug in
+	parsing of attributes. A "value-attribute" which appeared just
+	before the closing bracket of a tag was being silently discarded.
+
+	* html-parser.lisp (define-html-parser): Renamed the symbol bound
+	to the return value of the last context from
+	'html-parser::return-value to 'it. This is more consistant (IMO)
+	with the handling of similar values elsewhere in the package.
+
+1999-09-19    <kaelin@SUMMIT>
+
+	* html-tags.lisp: Introduced '*dtd-toplevel-tags* in place of
+	'*html-root* to handle DTDs with more than one toplevel tag
+	definition.
+
+	Previously it was assumed that a DTD would contain only one
+	"toplevel" tag (eg. element with no containers). When the DTD was
+	initialized, this tag was cached in '*html-root*. Other code
+	(notably #'open-tag and friends in html-parser.lisp) depended on
+	'*html-root* for various housekeeping chores (like cleaning up
+	after improperly nested or unclosed tags).
+
+	* defs.lisp: Added 'toplevel-tag slot to 'parser defstruct. This
+	tracks the toplevel tag currently being parsed (see above).
+
+	* html-parser.lisp: Updated to handle DTDs with more than one
+	toplevel tag definition (see above).
+
+1999-09-19    <kaelin@sherpa.everest.com>
+
+	* defs.lisp: Renamed LSP DTD to "-//KLC//DTD LSP 1.0//EN" and
+	moved the source into the lsp directory. For now, there's a
+	symlink from lsp-1-0.lisp to ../lsp/lsp-1-0.lisp so that
+	#'initialize-parser can find it.
+
+	TODO: Find a way to eliminate the symlink and the corresponding
+	entry in *html-dtd-list*.
+
+1999-09-17    <kaelin@sherpa.everest.com>
+
+	* html-reader.lisp (read-cdata-text): Added function for handling
+	CDATA (unparsed character data) element contents. This gets called
+	by #'next-html-token when the previous token was the opening tag
+	of an element defined by the DTD to have CDATA content.
+
+	* html-parser.lisp: Added :on-cdata functionality to the macro
+	#'define-html-parser-context. This fixes the bug described below
+	(1999-09-16). The parser now properly distinguishes CDATA from
+	PCDATA.
+
+	* html-4-0-*.lisp: Restored definitions of %Script and %StyleSheet
+	entities to cdata.
+	
+	* system.lisp: Updated system definition to reflect :definitions
+	dependancies on defs.lisp.
+
+1999-09-16    <kaelin@sherpa.everest.com>
+
+	* html-4-0-lsp-1-0.lisp: Lisp Server Page (LSP) DTD transcription,
+	based on html-4-0-transitional.lisp.
+	
+	* defs.lisp: Added html-4-0-lsp-1-0.lisp to *html-dtd-list*.
+
+	* html-4-0-*.lisp: Changed definitions of %Script and %StyleSheet
+	entities to (:or cdata pcdata). [Previously they were just cdata.]
+	Sunil confirmed that the parser does not correctly distinguish
+	CDATA vs. PCDATA in the body of a document -- it always reports it
+	as PCDATA.
+	---8<---
+	From smishra@cc.gatech.edu  Thu Sep 16 13:17:30 1999
+	To: "Kaelin Colclasure" <kaelin@everest.com>
+	Subject: Re: Fw: 
+
+	I looked at the DTD after your first report, and I noted the 
+	cdata. This will work for now, but is not correct. The fault
+	is ultimately mine, in not understanding the intention and
+	the uses of CDATA and PCDATA.
+	
+	I had assumed that the body of an SGML document is always
+	composed of PCDATA, and looking back I now realize it is not
+	so. Simply introducing PCDATA in the tag is a temporary fix,
+	in that the rules for interpreting PCDATA and CDATA are not
+	the same. The differences can cause subtle errors in parsing
+	scripts. My parser does not make enough of an allowance to
+	handle CDATA correctly, and doing The Right Thing is going
+	to be impossible right now. I have a lot on my hands.
+	
+	In short, substituting PCDATA for CDATA should be a fine fix
+	for now. You may not even notice the difference, since I have
+	made the PCDATA parsing in the parser more flexible than is
+	strictly correct.
+	
+	Thanks for pointing this out. I'll let you know if I get to
+	fixing the bug.
+	
+	Sunil
+	--->8---
+
+	TODO: Explore what "subtle errors" might be...
+	
+1999-09-15    <kaelin@sherpa.everest.com>
+
+	* html-parser.lisp (sort-forms-by-separators): This function is
+	used by #'define-html-parser and #'define-html-parser-context to
+	order the keyword-delimited form lists. Originally it expected
+	definitions to look like this:
+
+	(define-html-parser simple-parser ()
+	  :transitions (:start (simple-parse-context))
+	               (simple-parse-context t :end))
+
+	My problem with this form was that it is not auto-indentation
+	friendly. I changed it to instead expect:
+
+	(define-html-parser simple-parser ()
+	  (:transitions (:start (simple-parse-context))
+			(simple-parse-context t :end)))
+
+	This also simplified the code considerably [although possibly at
+	the expense of some error checking].
+
+	* html-utilities.lisp (simple-parse-context, simple-parser):
+	Updated to new macro syntax as described above.
+
+;; $Id: //depot/cl-http/html-parser-11/ChangeLog#1 $
+
+;; Local Variables:
+;; mode: Change-Log
+;; End:
+
+;;; EOF

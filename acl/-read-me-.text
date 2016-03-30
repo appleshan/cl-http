@@ -1,0 +1,11 @@
+There are two ports of CL-HTTP to ACL.
+
+	* http:obc; Olivier Clarisse Port for ACL versions 4, 5, 6 and ACLPC
+
+	* http:jkf; John Foderaro Port at the server level for ACL 5.0.1 and 6.
+                    Components beyond the server may be shakey and the server
+                    port may be missing features present in other ports.
+
+If you make any improvements, please send a note to:
+bug-acl-cl-http@ai.mit.edu and arrange for integration of your changes
+into the distributed sources.

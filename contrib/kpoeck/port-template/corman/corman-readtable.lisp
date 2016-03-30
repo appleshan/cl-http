@@ -1,0 +1,18 @@
+(in-package :cl)
+
+(defun set-dispatch-macro-character (disp-char sub-char function 
+	&optional (readtable *readtable*))
+	(unless (readtablep readtable) (setq readtable *readtable*))
+    (when (and (symbolp function)(fboundp function))
+        (setq function (fdefinition function)))
+	(unless (functionp function) (error "Non-function passed to SET-DISPATCH-MACRO-CHARACTER"))
+	(if (digit-char-p sub-char)
+		(error "Attempted to create a dispatching macro with a decimal digit"))
+	(setq sub-char (char-upcase sub-char)) 
+	(let* ((table (uref readtable readtable-table-offset))
+		   (index (* (char-int disp-char) 2))
+		   (dispatch-table (elt table (+ index 1))))
+		(unless (vectorp dispatch-table)
+			(error "Not a dispatching macro"))
+		(setf (elt dispatch-table (char-int sub-char)) function)
+		t))

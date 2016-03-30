@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<link href="/cl-http/css/base.css" rel="stylesheet" title="master" type="text/css">
+<title>Using Self-Signed Certificates for SSL with CL-HTTP</title>
+</head>
+<body>
+
+<h1>Using Self-Signed Certificates for SSL with CL-HTTP</h1>
+
+<hr>
+
+<p>The procedures described here enable you to create the keys, certificates and Diffy-Helman
+parameter files necessary to run CL-HTTP with SSL using self-signed certificates.<p>
+
+<p> Use of self-signed certificates is convenient for testing your secure Web site and practical for
+low-budget Web sites, but serious Web sites should obtain server certificates from an established
+certificate authority, like <a href="http://www.verisign.com/">Verisign</a>.</p>
+
+<p>By following the procedures below, you will be acting as your own certificate authority.  The
+next step after minting a certificate for your server is to also mint certificates for clients.  The
+file <a href="/cl-http/sources/examples/ssl/client-certificate.lisp">
+http:examples;ssl;client-certificates.lisp</a> defines a Web interface that enables users to mint
+client certificates using Mozilla, Firefox, or Netscape Communicator.</p>
+
+<p>The shell commands described here work with <a href="http://www.openssl.org/">OpenSSL</a> under
+the UNIX family of operating systems. They have been tested under Mac OS X 10.4.6.</p>
+
+<p>Windows users may need to make appropriate adjustments, but the overall sequence should work
+there as well.</p>
+
+<p>Please report any corrections or improvements to this recipe to <a
+href="mailto:bug-cl-http@nospam.cl-http.org">bug-cl-http@nospam.cl-http.org</a>.</p>
+
+<ol type="A">
+<h2><li>Preparation</li></h2>
+
+<ol>
+
+<li> Create a directory to contain the key and certificate files.
+
+<blockquote class="shell-commands">
+<pre>
+  mkdir ~/desktop/certificate-authority/
+  cd ~/desktop/certificate-authority/
+</pre>
+</blockquote></li>
+
+<li> Obtain the shell script <em>sign.sh</em> from <a
+href="http://www.faqs.org/docs/securing/chap24sec195.html">http://www.faqs.org/docs/securing/chap24sec195.html</a>
+<br>(sign.sh not available in OpenSSL distributions)</li>
+
+<li> Move it into the certificate-authority directory</li>
+
+<li> Set the permissions on sign.sh
+
+<blockquote class="shell-commands">
+<pre>
+  chmod +x sign.sh
+</pre>
+</blockquote>
+</li>
+
+</ol>
+
+<h2><li>Create Certificate Authority Key</li></h2>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl genrsa -des3 -out ca.key 2048
+</pre>
+</blockquote>
+
+<h2><li>Create a Self-Signed Certificate Authority (CA)</li></h2>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl req -new -x509 -days 365 -key ca.key -out ca.crt
+</pre>
+</blockquote>
+
+<blockquote class="shell-output">
+<pre>
+     <i>Enter pass phrase for ca.key:
+     You are about to be asked to enter information that will be incorporated
+     into your certificate request.
+     What you are about to enter is what is called a Distinguished Name or a DN.
+     There are quite a few fields but you can leave some blank
+     For some fields there will be a default value,
+     If you enter '.', the field will be left blank.</i>
+     -----
+     <i>Country Name (2 letter code) [AU]:</i> US
+     <i>State or Province Name (full name) [Some-State]:</i> Massachusetts
+     <i>Locality Name (eg, city) []:</i> Cambridge
+     <i>Organization Name (eg, company) [Internet Widgits Pty Ltd]:</i> CL-HTTP Consortium
+     <i>Organizational Unit Name (eg, section) []:</i> Cambridge Research
+     <i>Common Name (eg, YOUR name) []:</i> John C. Mallery
+     <i>Email Address []:</i> Webmaster@nospam.cl-http.org
+</pre>
+</blockquote>
+
+<h2><li>Create Private Key For The SSL Server</li></h2>
+
+<p>Here we create an RSA key, but DSA keys are also possible with OpenSSL.</p>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl genrsa -des3 -out www-cl-http-org.key 2048
+</pre>
+</blockquote>
+
+<h2><li>Create a Certificate Request (CSR) For The SSL Server</li></h2>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl req -new -key www-cl-http-org.key -out www-cl-http-org.csr
+</pre>
+</blockquote>
+
+<blockquote class="shell-output">
+<pre>
+     <i>Enter pass phrase for www-cl-http-org.key:
+     You are about to be asked to enter information that will be incorporated
+     into your certificate request.
+     What you are about to enter is what is called a Distinguished Name or a DN.
+     There are quite a few fields but you can leave some blank
+     For some fields there will be a default value,
+     If you enter '.', the field will be left blank.</i>
+     -----
+     <i>Country Name (2 letter code) [AU]:</i> US
+     <i>State or Province Name (full name) [Some-State]:</i> Massachusetts
+     <i>Locality Name (eg, city) []:</i>Cambridge
+     <i>Organization Name (eg, company) [Internet Widgits Pty Ltd]:</i> CL-HTTP Consortium
+     <i>Organizational Unit Name (eg, section) []:</i> Cambridge Research
+     <i>Common Name (eg, YOUR name) []:</i> www.cl-http.org
+     <i>Email Address []:</i> Webmaster@nopsam.cl-http.org
+     
+     <i>Please enter the following 'extra' attributes
+     to be sent with your certificate request
+     A challenge password []:
+     An optional company name []:</i>
+</pre>
+</blockquote>
+
+<h2><li>Sign The Certificate Request (CSR) Using Your Certificate Authority (CA)</li></h2>
+
+<blockquote class="shell-commands">
+<pre>
+  ./sign.sh www-cl-http-org.csr
+</pre>
+</blockquote>
+
+<blockquote class="shell-output">
+<pre>
+<i>CA signing: www-cl-http-org.csr -> www-cl-http-org.crt:
+Using configuration from ca.config
+Enter pass phrase for ./ca.key:
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'US'
+stateOrProvinceName   :PRINTABLE:'Massachusetts'
+localityName          :PRINTABLE:'Cambridge'
+organizationName      :PRINTABLE:'CL-HTTP Consortium'
+organizationalUnitName:PRINTABLE:'Cambridge Research'
+commonName            :PRINTABLE:'www.cl-http.org'
+emailAddress          :IA5STRING:'Webmaster@nospam.cl-http.org'
+Certificate is to be certified until Apr 11 16:49:39 2007 GMT (365 days)
+Sign the certificate? [y/n]:</i> y
+
+<i>1 out of 1 certificate requests certified, commit? [y/n]</i> y
+<i> Write out database with 1 new entries
+Data Base Updated
+CA verifying: www-cl-http-org.crt <-> CA cert
+www-cl-http-org.crt: OK</i>
+</pre>
+</blockquote>
+
+<h2><li>Create a Diffy-Hellman Parameter File</li></h2>
+
+<p>This step generates parameters used by SSL under LispWorks.The number of bits should agree with
+the length of keys and certificates. 2048 is a reasonable number, but it takes some time to compute.
+1024 goes much faster. If you have already have a dhparam.pem file, you can use it to speed prime
+number generation by supplying the -in argument. If you have properly initialized the cl-http random
+seed and run the server a number of times, you can see the random generator with the random seed
+file from cl-http found in http:log;pw;random-seed.lisp by providing it with the argument -rand.</p>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl dhparam -outform PEM -out dhparams2048.pem 2048
+</pre>
+</blockquote>
+
+<h2><li>Copy The Certificate, Key and DH Parameters To HTTP:PW;SSL;</li></h2>
+
+<ol>
+
+<li> Make sure the SSL directory exists by evaluating:
+<blockquote class="lisp-code">
+<pre>
+  (http:pathname-create-directory-if-needed #p"http:pw;ssl;")
+</pre>
+</blockquote>
+
+<li> Translate the logical pathname with:
+<blockquote class="lisp-code">
+<pre>
+  (http:translated-pathname "http:pw;ssl;")
+</pre>
+</blockquote>
+
+<li>Copy the key, certificate and DH parameters to HTTP:PW;SSL;
+  
+<blockquote class="shell-commands">
+<pre>
+  cp www-cl-http-org.key /cl-http/log/pw/ssl/
+  cp www-cl-http-org.crt /cl-http/log/pw/ssl/
+  cp dhparams2048.pem /cl-http/log/pw/ssl/
+</pre>
+</blockquote>
+
+</ol>
+
+<h2><li>Decrypt The Server Key To Avoid Start Up Prompts (Optional)</li></h2>
+
+<p>A weakness with this approach is that the server key remains unencrypted on the file system. You
+should restrict read-write access to the server key file to only the uid under which the server runs.</p>
+
+<p>A better approach would leave the server key encrypted and access the decryption password from
+the operating system keychain in order to pass it to <a
+href="/cl-http/lispdoc?package=HTTP&symbol=DEFINE-HTTPS-SERVICE&type=FUNCTION">http:define-https-service</a>.</p>
+<ol>
+
+<li>Change the working directory to HTTP:PW;SSL;
+<blockquote class="shell-commands">
+<pre>
+  cd /cl-http/log/pw/ssl/
+</pre>
+</blockquote>
+
+<li>Copy the original server key</li>
+<blockquote class="shell-commands">
+<pre>
+  cp www-cl-http-org.key www-cl-http-orgoriginal.key
+</pre>
+</blockquote>
+
+<li>Decrypt the server key</li>
+
+<blockquote class="shell-commands">
+<pre>
+  openssl rsa -in www-cl-http-orgoriginal.key -out www-cl-http-org.key
+</pre>
+</blockquote>
+
+</ol>
+
+<h2><li>Define HTTPS Port Parameters</li></h2>
+
+<p>Define the SSL parameters for the port serving HTTPS. If you are using no password with your
+server key, then provide the null string as the password.</p>
+
+<blockquote class="lisp-code">
+<pre>
+  (<a href="/cl-http/lispdoc?package=HTTP&symbol=DEFINE-HTTPS-SERVICE&type=FUNCTION">define-https-service</a>
+   :port 8443
+   :certificate #p"http:pw;ssl;www-cl-http-org.crt"
+   :private-key #p"http:pw;ssl;www-cl-http-org.key"
+   :password "********"
+   :parameters #p"http:pw;ssl;dhparam2048.pem"
+   :ciphers :export
+   :ssl-version :ssl-default
+   :enable-service-p t)
+</pre>
+</blockquote>
+
+<h2><li>Test HTTPS &amp; SSL on the Selected Port</li></h2>
+
+<p>If you are running the CL-HTTP demonstration Web site, you can export a few URLs and access them
+with your favorite Web browser to confirm that everything worked.</p>
+
+<blockquote class="lisp-code">
+<pre>
+  (export-url #u("/cl-http/" :port 8443 :protocol :https)
+              :directory
+              :recursive-p t
+              :pathname "http:www;cl-http;"
+              :expiration `(:interval ,(* 15. 60.))
+              :public t
+              :language :en
+              :keywords '(:cl-http :documentation))
+  
+  (export-url #u("favicon.ico" :port 8443 :protocol :https)
+              :ico-image
+              :pathname #p"http:www;cl-http;icons;lambda.ico"
+              :public t :max-age #.(* 60 60 24) ;recache every day
+              :keywords '(:cl-http :demo)
+              :documentation "The Website URL icon.")
+</pre>
+</blockquote>
+
+
+<h2><li>Notes</li></h2>
+	
+<p>More examples of SSL configurations are available in <a
+href="/cl-http/sources/examples/ssl/configuration.lisp">
+http:examples;ssl;configuration.lisp</a></p>
+
+<p>File names for certificates and DH parameters need to be acceptable to OpenSSL as well as Common
+Lisp, or else you may encounter unexpected behaviors.</p>
+
+<p>Procecures for configuring Apache SSL are available at <a
+href="http://developer.apple.com/internet/serverside/modssl.html">http://developer.apple.com/internet/serverside/modssl.html</a></p>
+
+</ol>
+
+<hr>
+
+<address>Copyright 2006, <a href="http://www.cl-http.org:8001/">CL-HTTP Consortium</a>. All rights reserved.<br>
+<a href="http://web.mit.edu/">M.I.T.</a> <a
+href="http://www.csail.mit.edu/">Computer Science &amp; Artificial
+Intelligence Laboratory</a>
+
+</body>
+</html>

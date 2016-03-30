@@ -1,0 +1,580 @@
+;; 20010611 mcl4.2 + cl-http
+? 
+#<Package "XML-PARSER">
+(("**;*.*" "www:Dokumente:Standards:XML:XMLConf:xmlconf:**:*.*"))
+#<STANDARD-METHOD XML-PARSER::STREAM->STRING (STREAM)>
+#<STANDARD-METHOD XML-PARSER::STREAM->STRING (PATHNAME)>
+#<STANDARD-METHOD XML-PARSER::STREAM->VECTOR (STREAM)>
+#<STANDARD-METHOD XML-PARSER::STREAM->VECTOR (PATHNAME)>
+XML-PARSER::*DISCREPANCIES*
+XML-PARSER::REPORT-PARSE
+
+
+#4P"xmlconf:oasis;*pass*.xml" (:PASS T)....
+
+p04pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: tag '<A.-:̀·/>' is a qualified name -> Error #<|NSC: Prefix Declared| #xA16D60E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p04pass1.xml"> :POSITION ...)) :INPUT ...). [NSC: Prefix Declared] : no visible binding for prefix: |xmlns|::A.-.
+
+p05pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: tags '<::._-0/>' and '<:/>' don't follow QName constraint. -> Error #<|NSC: Prefix Declared| #xA1703DE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p05pass1.xml"> :POSITION ...)) :INPUT ...). [NSC: Prefix Declared] : no visible binding for prefix: |xmlns|::A......
+
+p11pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: PE: the system literal contains a fragment identifier. -> Error #<|WFC: [SystemLiteral]| #xA18742E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p11pass1.xml"> :POSITION ...)) :INPUT ...). [WFC: [SystemLiteral]] : production failed. [WFC: [SystemLiteral]] : no fragment identifier permitted: "a%a&b&#0<!ELEMENT<!--<?</>?>/\\''".............................................................................
+
+p66pass1.xml (p y) (v n): FAILED: OK/DISCREPANT: IR: character is outside of mcl range. -> Error #<|WFC: Legal Character| #xA259C26> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:oasis:p66pass1.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10F2ec"/#x10F2EC (not supported)..........
+
+#4P"xmlconf:oasis;*fail*.xml" (:PASS NIL).......................................................................
+
+p06fail1.xml (p n) (v n): PASSED: #<DOC-NODE #xA3077FE>: OK/DISCREPANT: VR: idref validity not enforced.
+
+p08fail1.xml (p n) (v n): PASSED: #<DOC-NODE #xA30BA16>: OK/DISCREPANT: VR: a null name or empty set is permitted.
+
+p08fail2.xml (p n) (v n): PASSED: #<DOC-NODE #xA30EB2E>: OK/DISCREPANT: VR: passes when not validating..........................
+
+p16fail3.xml (p n) (v n): PASSED: #<DOC-NODE #xA347BFE>: OK/DISCREPANT: PE: is not present in the documentation and has a legal NCName as PiTarget.......................................................................................................................................................
+
+#4P"xmlconf:sun;not-wf;*.xml" (:PASS NIL)........................................................
+
+#4P"xmlconf:sun;invalid;*.xml" (:PASS NIL :VALIDATE T)..........................
+
+empty.xml (p n) (v y): PASSED: #<DOC-NODE #xA55236E>: OK/DISCREPANT: VR: whitespace, comments, and processing instructions are permitted in EMPTY..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id01.xml #xA555F8E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id01.xml #xA555F8E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id01.xml #xA555F8E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id01.xml #xA555F8E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id01.xml #xA555F8E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id02.xml #xA55F58E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id02.xml #xA55F58E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id02.xml #xA55F58E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id02.xml #xA55F58E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id02.xml #xA55F58E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id03.xml #xA5688B6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id03.xml #xA5688B6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id03.xml #xA5688B6>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id03.xml #xA5688B6>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/id03.xml #xA5688B6>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.....
+
+id08.xml (p n) (v y): PASSED: #<DOC-NODE #xA57CA6E>: OK/DISCREPANT: VR: validation does not check id cross-references.
+
+id09.xml (p n) (v y): PASSED: #<DOC-NODE #xA57FD66>: OK/DISCREPANT: VR: validation does not check id cross-references.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #xA582E96>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #xA582E96>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #xA582E96>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #xA582E96>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa01.xml #xA582E96>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa01.xml (p n) (v y): PASSED: #<DOC-NODE #xA583616>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #xA58C736>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #xA58C736>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #xA58C736>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #xA58C736>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa02.xml #xA58C736>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa02.xml (p n) (v y): PASSED: #<DOC-NODE #xA58CEB6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #xA596C86>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #xA596C86>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #xA596C86>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #xA596C86>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa03.xml #xA596C86>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa03.xml (p n) (v y): PASSED: #<DOC-NODE #xA597406>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #xA5A0B5E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #xA5A0B5E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #xA5A0B5E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #xA5A0B5E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa04.xml #xA5A0B5E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa04.xml (p n) (v y): PASSED: #<DOC-NODE #xA5A12DE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #xA5A991E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #xA5A991E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #xA5A991E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #xA5A991E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa05.xml #xA5A991E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa05.xml (p n) (v y): PASSED: #<DOC-NODE #xA5AA0BE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #xA5B2736>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #xA5B2736>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #xA5B2736>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #xA5B2736>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa06.xml #xA5B2736>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa06.xml (p n) (v y): PASSED: #<DOC-NODE #xA5B2EB6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #xA5BC64E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #xA5BC64E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #xA5BC64E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #xA5BC64E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa07.xml #xA5BC64E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa07.xml (p n) (v y): PASSED: #<DOC-NODE #xA5BCDCE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #xA5C557E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #xA5C557E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #xA5C557E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #xA5C557E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa08.xml #xA5C557E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa08.xml (p n) (v y): PASSED: #<DOC-NODE #xA5C5CFE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #xA5CE54E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #xA5CE54E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #xA5CE54E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #xA5CE54E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa09.xml #xA5CE54E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa09.xml (p n) (v y): PASSED: #<DOC-NODE #xA5CECCE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #xA5D84D6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #xA5D84D6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #xA5D84D6>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #xA5D84D6>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa10.xml #xA5D84D6>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa10.xml (p n) (v y): PASSED: #<DOC-NODE #xA5D8C56>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #xA5E14EE>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #xA5E14EE>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #xA5E14EE>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #xA5E14EE>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa11.xml #xA5E14EE>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa11.xml (p n) (v y): PASSED: #<DOC-NODE #xA5E1C6E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #xA5EA61E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #xA5EA61E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #xA5EA61E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #xA5EA61E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa12.xml #xA5EA61E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa12.xml (p n) (v y): PASSED: #<DOC-NODE #xA5EADAE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #xA5F453E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #xA5F453E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #xA5F453E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #xA5F453E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa13.xml #xA5F453E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa13.xml (p n) (v y): PASSED: #<DOC-NODE #xA5F4CBE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #xA5FD536>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #xA5FD536>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #xA5FD536>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #xA5FD536>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/not-sa14.xml #xA5FD536>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+
+
+not-sa14.xml (p n) (v y): PASSED: #<DOC-NODE #xA5FDCD6>: OK/DISCREPANT: VR: standalone stipulation not enforced...........................
+
+pe01.xml (p n) (v y): PASSED: #<DOC-NODE #xA73DDFE>: OK/DISCREPANT: PE: a parameter entities is not recognized in an attribute default.....
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/root.xml #xA74A69E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/root.xml #xA74A69E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/root.xml #xA74A69E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/root.xml #xA74A69E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/invalid/root.xml #xA74A69E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+...
+
+#4P"xmlconf:sun;valid;*.xml" (:PASS T :VALIDATE T)...
+
+ext01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: references a non-existent external entity. -> Error #<|WFC: External Parsed Entity| #xA76B87E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:sun:valid:ext01.xml"> :POSITION ...)) :INPUT ...). [WFC: External Parsed Entity] : entity identified as (SYSTEM "null.ent" PUBLIC NIL) does not have the form of an external parsed entity: File #4P"www;Dokumente;Standards;XML;XMLConf;xmlconf;sun;valid;null.ent" does not exist..
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa01.xml #xA77244E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa01.xml #xA77244E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa01.xml #xA77244E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa01.xml #xA77244E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa01.xml #xA77244E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa02.xml #xA77BFB6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa02.xml #xA77BFB6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa02.xml #xA77BFB6>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa02.xml #xA77BFB6>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa02.xml #xA77BFB6>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa03.xml #xA787396>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa03.xml #xA787396>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa03.xml #xA787396>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa03.xml #xA787396>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa03.xml #xA787396>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa04.xml #xA7916F6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa04.xml #xA7916F6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa04.xml #xA7916F6>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa04.xml #xA7916F6>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/not-sa04.xml #xA7916F6>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+
+notation01.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition -> Error #<|VC: Notation Attributes| #xA79DB3E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:sun:valid:notation01.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::GIF.......
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa02.xml #xA7DA82E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa02.xml #xA7DA82E>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa02.xml #xA7DA82E>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa02.xml #xA7DA82E>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa02.xml #xA7DA82E>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa03.xml #xA7E3F96>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa03.xml #xA7E3F96>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa03.xml #xA7E3F96>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa03.xml #xA7E3F96>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa03.xml #xA7E3F96>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa04.xml #xA7EE6A6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa04.xml #xA7EE6A6>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa04.xml #xA7EE6A6>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa04.xml #xA7EE6A6>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa04.xml #xA7EE6A6>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+.
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa05.xml #xA7F9536>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/null" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa05.xml #xA7F9536>:
+;          Error parsing the URL, "file:/dev/null"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/tty" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa05.xml #xA7F9536>:
+;          Error parsing the URL, "file:/dev/tty"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "file:/dev/console" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa05.xml #xA7F9536>:
+;          Error parsing the URL, "file:/dev/console"..
+; While executing: MAKE-URI
+; Warning: literal uri value will be used: "scheme://host/data" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/sun/valid/sa05.xml #xA7F9536>:
+;          No parser defined for protocol scheme in the URL, "scheme://host/data"..
+; While executing: MAKE-URI
+........
+
+#4P"xmlconf:ibm;not-wf;*;*.xml" (:PASS NIL)
+
+432gewf.xml (p n) (v n): PASSED: #<DOC-NODE #xA830CD6>: OK/DISCREPANT: PE: general entity content constraint not enforced..............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+
+#4P"xmlconf:ibm;invalid;*;*.xml" (:PASS NIL :VALIDATE T).
+
+ibm29i01.xml (p n) (v y): PASSED: #<DOC-NODE #x83A94DE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i01.xml (p n) (v y): PASSED: #<DOC-NODE #x83B29DE>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i02.xml (p n) (v y): PASSED: #<DOC-NODE #x83B73C6>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i03.xml (p n) (v y): PASSED: #<DOC-NODE #x83BBB0E>: OK/DISCREPANT: VR: standalone stipulation not enforced..
+
+ibm32i04.xml (p n) (v y): PASSED: #<DOC-NODE #x83C0346>: OK/DISCREPANT: VR: standalone stipulation not enforced.........
+
+ibm49i01.xml (p n) (v y): PASSED: #<DOC-NODE #x83E43FE>: OK/DISCREPANT: VR: group/pe nesting not enforced..
+
+ibm50i01.xml (p n) (v y): PASSED: #<DOC-NODE #x83ED956>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+ibm51i01.xml (p n) (v y): PASSED: #<DOC-NODE #x83F4476>: OK/DISCREPANT: VR: group/pe nesting not enforced........
+
+ibm56i08.xml (p n) (v y): PASSED: #<DOC-NODE #x840FBF6>: OK/DISCREPANT: PE: references a non-existent external entity...
+
+ibm56i10.xml (p n) (v y): PASSED: #<DOC-NODE #x8419676>: OK/DISCREPANT: VR: id reference validity is not enforced..........................
+
+#4P"xmlconf:ibm;valid;*;*.xml" (:PASS T :VALIDATE T).
+
+ibm02v01.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: characters beyond supported limit at offset 281. -> Error #<INTERNAL-XML-ERROR #x84782DE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P02:ibm02v01.xml"> :POSITION ...)) :INPUT ...). unsupported unicode datum: (240 144 128 ...). unsupported unicode datum: (240 144 128 ...)........................................................................................................
+; Warning: literal uri value will be used: "d:\\testspec\\images\\sunset.gif" / #<FILE-PATHNAME file:///www/Dokumente/Standards/XML/XMLConf/xmlconf/ibm/valid/P56/ibm56v08.xml #x861A4BE>:
+;          No parser defined for protocol scheme in the URL, "d:\\testspec\\images\\sunset.gif"..
+; While executing: MAKE-URI
+....
+
+ibm58v01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: constraint introduced in errata. -> Error #<|VC: No Duplicate Tokens| #x862F99E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P58:ibm58v01.xml"> :POSITION ...)) :INPUT ...). [VC: No Duplicate Tokens] : The names in a single declaration must all be distinct..
+
+ibm59v01.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: constraint introduced in errata. -> Error #<|VC: No Duplicate Tokens| #x863880E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P59:ibm59v01.xml"> :POSITION ...)) :INPUT ...). [VC: No Duplicate Tokens] : The names in a single declaration must all be distinct.......................
+
+ibm66v01.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: characters beyond supported limit. -> Error #<|WFC: Legal Character| #x869CA3E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:ibm:valid:P66:ibm66v01.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported)...............
+
+#4P"xmlconf:xmltest;not-wf;*;*.xml" (:PASS NIL)...................................................................................
+
+074.xml (p n) (v n): PASSED: #<DOC-NODE #x87A388E>: OK/DISCREPANT: VR: group/pe nesting not enforced..............................
+
+104.xml (p n) (v n): PASSED: #<DOC-NODE #x87EAFBE>: OK/DISCREPANT: VR: group/pe nesting not enforced............
+
+115.xml (p n) (v n): PASSED: #<DOC-NODE #x88024A6>: OK/DISCREPANT: PE a single character reference is well-formed...
+
+117.xml (p n) (v n): PASSED: #<DOC-NODE #x8806A7E>: OK/DISCREPANT: PE a single character reference is well-formed...
+
+119.xml (p n) (v n): PASSED: #<DOC-NODE #x880B2DE>: OK/DISCREPANT: PE a single character reference is well-formed..
+
+120.xml (p n) (v n): PASSED: #<DOC-NODE #x880D7A6>: OK/DISCREPANT: PE a single character reference is well-formed..............................................................
+
+181.xml (p n) (v n): PASSED: #<DOC-NODE #x888FF16>: OK/DISCREPANT: VR: group/pe nesting not enforced..
+
+182.xml (p n) (v n): PASSED: #<DOC-NODE #x88927DE>: OK/DISCREPANT: VR: group/pe nesting not enforced......
+
+#4P"xmlconf:xmltest;invalid;*.xml" (:PASS NIL :VALIDATE T)
+
+001.xml (p n) (v y): PASSED: #<DOC-NODE #x889F8EE>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+002.xml (p n) (v y): PASSED: #<DOC-NODE #x88A33D6>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+003.xml (p n) (v y): PASSED: #<DOC-NODE #x88A6ECE>: OK/DISCREPANT: PE: 003-2.ent is missing....
+
+006.xml (p n) (v y): PASSED: #<DOC-NODE #x88B0A66>: OK/DISCREPANT: VR: group/pe nesting not enforced.
+
+#4P"xmlconf:xmltest;valid;*;*.xml" (:PASS T :VALIDATE T)................
+
+003.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: 003-2.ent is missing. -> Error #<|WFC: External Subset| #x88F88CE> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:not-sa:003-1.ent"> :POSITION ...)) :INPUT ...). [WFC: External Subset] : entity identified as (SYSTEM "003-1.ent" PUBLIC NIL) does not have the form of an external subset: Error #<|WFC: External Subset| #x88F8786> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:not-sa:003-1.ent"> :POSITION ...)) :INPUT ...). [WFC: External Subset] : entity identified as (SYSTEM "003-2.ent" PUBLIC NIL) does not have the form of an external subset: File #4P"www;Dokumente;Standards;XML;XMLConf;xmlconf;xmltest;valid;not-sa;003-2.ent" does not exist........................................
+
+012.xml (p y) (v y): FAILED: OK/DISCREPANT: PE: attribute name ':' is not namespace conform -> Error #<INCOMPLETE-PARSE #x898D436> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:012.xml"> :POSITION ...)) :INPUT ...). [INCOMPLETE-PARSE] : incomplete parse........................................
+
+052.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<INTERNAL-XML-ERROR #x8A0163E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:052.xml"> :POSITION ...)) :INPUT ...). unsupported unicode datum: (240 144 128 ...). unsupported unicode datum: (240 144 128 ...)............
+
+064.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<|WFC: Legal Character| #x8A2607E> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:064.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported)............
+
+076.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition. -> Error #<|VC: Notation Attributes| #x8A4A316> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:076.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::\n1.............
+
+089.xml (p y) (v y): FAILED: OK/DISCREPANT: IR: character beyond supported limit. -> Error #<|WFC: Legal Character| #x8A73786> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:089.xml"> :POSITION ...)) :INPUT ...). [WFC: Legal Character] : character name/code error: "x10000"/#x10000 (not supported).
+
+090.xml (p y) (v y): FAILED: OK/DISCREPANT: VR: a notation is used prior to definition. -> Error #<|VC: Notation Attributes| #x8A762F6> parse error with-state (:INPUTS ((:SOURCE #<CLOSED CCL::INPUT-BINARY-FILE-STREAM to "www:Dokumente:Standards:XML:XMLConf:xmlconf:xmltest:valid:sa:090.xml"> :POSITION ...)) :INPUT ...). [VC: Notation Attributes] : all notation names must be declared: ||::\n..............................
+(:CASES 1812 :CONFORMANT 1750)
+:EOF
+? 

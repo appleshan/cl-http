@@ -1,0 +1,6 @@
+;;;   -*- Mode: LISP; Package: CL-USER; BASE: 10; Syntax: ANSI-Common-Lisp;-*-
+
+
+(setf (logical-pathname-translations "bnfp")
+      `(("bnfp:code;**;*.*" "W:>http>cl-xml>0-908>atn-parser-20010623>*.*.*")
+	("**;*.*" "W:>http>cl-xml>0-908>atn-parser-20010623>**>*.*.*")))

@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<!DOCTYPE AuctionWatchList [
+ <!ENTITY % High_Bidder.content '((eachbay:ID, eachbay:PositiveComments, eachbay:NeutralComments, eachbay:NegativeComments) |
+                                  (anyzone:ID, anyzone:Member_Since, anyzone:Rating)),
+                                 ma:MemberInfoPage' >
+ <!ENTITY % Seller.content '((eachbay:ID, eachbay:PositiveComments, eachbay:NeutralComments, eachbay:NegativeComments) |
+                                  (anyzone:ID, anyzone:Member_Since, anyzone:Rating)),
+                                 ma:MemberInfoPage' >
+ <!ENTITY % recordDTD SYSTEM 'record.dtd' >
+ <!ENTITY % Details.content '(record)' >
+ <!ENTITY Uuml 'Ü' >
+ <!ENTITY apos '&#39;' >
+ <!ENTITY quot '&#34;' >
+ <!ENTITY amp '&#38;' >
+ <!ENTITY gt '>' >
+ <!ENTITY lt '&#60;' >
+ <!ENTITY uuml 'ü' >
+ <!ENTITY Ouml 'Ö' >
+ <!ENTITY ouml 'ö' >
+ <!ENTITY Auml 'Ä' >
+ <!ENTITY auml 'ä' >
+ <!ELEMENT ma:AuctionWatchList (ma:Auction*) >
+ <!ATTLIST ma:AuctionWatchList 
+   xmlns CDATA  ''
+   xmlns:yabadoo CDATA #FIXED 'http://www.example.com/auctioneers#yabadoo'
+   xmlns:eachbay CDATA #FIXED 'http://www.example.com/auctioneers#eachbay'
+   xmlns:anyzone CDATA #FIXED 'http://www.example.com/auctioneers#anyzone'
+   xmlns:xlink CDATA #FIXED 'http://www.w3.org/1999/xlink'
+   xmlns:ma CDATA #FIXED 'http://www.example.com/AuctionWatch' >
+ <!ELEMENT ma:Auction (ma:AuctionHomepage, ma:Schedule, ma:Price, ma:Trading_Partners, ma:Details) >
+ <!ATTLIST ma:Auction 
+   yabadoo:ID CDATA #IMPLIED
+   eachbay:ID CDATA #IMPLIED
+   anyzone:ID CDATA #IMPLIED >
+ <!ELEMENT ma:AuctionHomepage EMPTY >
+ <!ATTLIST ma:AuctionHomepage 
+   xlink:href CDATA #IMPLIED
+   xlink:type CDATA #FIXED 'simple' >
+ <!ELEMENT ma:Schedule (ma:Open, ma:Close) >
+ <!ELEMENT ma:Open (#PCDATA) >
+ <!ATTLIST ma:Open 
+   xmlns:dt CDATA #FIXED 'http://www.w3.org/1999/XMLSchema-datatypes'
+   dt:type CDATA #FIXED 'timeInstant' >
+ <!ELEMENT ma:Close (#PCDATA) >
+ <!ATTLIST ma:Close 
+   xmlns:dt CDATA #FIXED 'http://www.w3.org/1999/XMLSchema-datatypes'
+   dt:type CDATA #FIXED 'timeInstant' >
+ <!ELEMENT ma:Price (ma:Start, ma:Current, ma:Number_of_Bids) >
+ <!ELEMENT ma:Start (#PCDATA) >
+ <!ATTLIST ma:Start 
+   ma:currency CDATA #IMPLIED >
+ <!ELEMENT ma:Current (#PCDATA) >
+ <!ATTLIST ma:Current 
+   ma:currency CDATA #IMPLIED >
+ <!ELEMENT ma:Number_of_Bids (#PCDATA) >
+ <!ELEMENT ma:Trading_Partners (ma:High_Bidder, ma:Seller) >
+ <!ELEMENT ma:High_Bidder (((eachbay:ID, eachbay:PositiveComments, eachbay:NeutralComments, eachbay:NegativeComments) | (anyzone:ID, anyzone:Member_Since, anyzone:Rating)), ma:MemberInfoPage) >
+ <!ELEMENT eachbay:ID (#PCDATA) >
+ <!ELEMENT eachbay:PositiveComments (#PCDATA) >
+ <!ELEMENT eachbay:NeutralComments (#PCDATA) >
+ <!ELEMENT eachbay:NegativeComments (#PCDATA) >
+ <!ELEMENT anyzone:ID (#PCDATA) >
+ <!ELEMENT anyzone:Member_Since (#PCDATA) >
+ <!ELEMENT anyzone:Rating (#PCDATA) >
+ <!ELEMENT ma:MemberInfoPage EMPTY >
+ <!ATTLIST ma:MemberInfoPage 
+   xlink:role CDATA #FIXED 'ma:MemberInfoPage'
+   xlink:href CDATA #REQUIRED
+   xlink:type CDATA #FIXED 'simple' >
+ <!ELEMENT ma:Seller (((eachbay:ID, eachbay:PositiveComments, eachbay:NeutralComments, eachbay:NegativeComments) | (anyzone:ID, anyzone:Member_Since, anyzone:Rating)), ma:MemberInfoPage) >
+ <!ELEMENT ma:Details (nsp-1:record) >
+ <!ATTLIST ma:Details 
+   xmlns:nsp-1 CDATA 'http://www.example.org/music/records' >
+ <!ELEMENT record (artist, title, recorded, label, remark*) >
+ <!ATTLIST record 
+   xmlns CDATA #FIXED 'http://www.example.org/music/records' >
+ <!ELEMENT artist (#PCDATA) >
+ <!ELEMENT title (#PCDATA) >
+ <!ELEMENT recorded (#PCDATA) >
+ <!ELEMENT label (#PCDATA) >
+ <!ELEMENT remark (#PCDATA) >
+ <!ATTLIST remark 
+   xml:lang (en|de)  'en' >
+ ]>
+<ma:AuctionWatchList xmlns:ma='http://www.example.com/AuctionWatch' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:anyzone='http://www.example.com/auctioneers#anyzone' xmlns:eachbay='http://www.example.com/auctioneers#eachbay' xmlns:yabadoo='http://www.example.com/auctioneers#yabadoo' xmlns=''>
+
+<!--  ________________________________________________________________________________  -->
+
+<ma:Auction anyzone:ID='0321K372910'>
+
+    <ma:AuctionHomepage xlink:type='simple' xlink:href='http://www.example.com/item/0321K372910' />
+
+    <ma:Schedule>
+        <ma:Open xmlns:dt='http://www.w3.org/1999/XMLSchema-datatypes' dt:type='timeInstant'>2000-03-21:07:41:34-05:00</ma:Open>
+        <ma:Close xmlns:dt='http://www.w3.org/1999/XMLSchema-datatypes' dt:type='timeInstant'>2000-03-23:07:41:34-05:00</ma:Close>
+    </ma:Schedule>
+    
+    <ma:Price>
+        <ma:Start ma:currency='USD'>3.00</ma:Start>
+        <ma:Current ma:currency='USD'>10.00</ma:Current>
+        <ma:Number_of_Bids>5</ma:Number_of_Bids>
+    </ma:Price>
+
+    <ma:Trading_Partners>
+        <ma:High_Bidder>
+            <eachbay:ID>RecordsRUs</eachbay:ID>
+            <eachbay:PositiveComments>231</eachbay:PositiveComments>
+            <eachbay:NeutralComments>2</eachbay:NeutralComments>
+            <eachbay:NegativeComments>5</eachbay:NegativeComments>
+            <ma:MemberInfoPage xlink:type='simple' xlink:href='http://auction.eachbay.com/members?get=RecordsRUs' xlink:role='ma:MemberInfoPage' />            
+        </ma:High_Bidder>
+        <ma:Seller>
+            <anyzone:ID>VintageRecordFreak</anyzone:ID>
+            <anyzone:Member_Since>October 1999</anyzone:Member_Since>
+            <anyzone:Rating>5</anyzone:Rating>
+            <ma:MemberInfoPage xlink:type='simple' xlink:href='http://auction.anyzone.com/members/VintageRecordFreak' xlink:role='ma:MemberInfoPage' />
+        </ma:Seller>
+    </ma:Trading_Partners>
+
+    <ma:Details>
+        <record xmlns='http://www.example.org/music/records'>
+            <artist>Miles Davis</artist>
+            <title>In a Silent Way</title>
+            <recorded>1969</recorded>
+            <label>Columbia Records</label>
+            <remark xml:lang='en'>
+                With Miles Davis (trumpet), Herbie Hancock (Electric Piano),
+                Chick Corea (Electric Piano), Wayne Shorter (Tenor Sax), Josef Zawinul
+                (Electric Piano &amp; Organ), John McLaughlin (Guitar), and
+                Tony Williams ( Drums).    The liner notes were written by Frank Glenn,
+                and the record is in fine condition. 
+            </remark>
+        </record>
+    </ma:Details>
+
+</ma:Auction>
+
+<!--  ________________________________________________________________________________  -->
+
+
+<ma:Auction yabadoo:ID='13143816'>
+
+    <ma:AuctionHomepage xlink:type='simple' xlink:href='http://auctions.yabadoo.com/auction/13143816' />
+
+    <ma:Schedule>
+        <ma:Open xmlns:dt='http://www.w3.org/1999/XMLSchema-datatypes' dt:type='timeInstant'>2000-03-19:17:03:00-04:00</ma:Open>
+        <ma:Close xmlns:dt='http://www.w3.org/1999/XMLSchema-datatypes' dt:type='timeInstant'>2000-03-29:17:03:00-04:00</ma:Close>
+    </ma:Schedule>
+    
+    <ma:Price>
+        <ma:Start ma:currency='USD'>3.00</ma:Start>
+        <ma:Current ma:currency='USD'>3.00</ma:Current>
+        <ma:Number_of_Bids>0</ma:Number_of_Bids>
+    </ma:Price>
+
+    <ma:Trading_Partners>
+        <ma:High_Bidder>
+            <eachbay:ID>VintageRecordFreak</eachbay:ID>
+            <eachbay:PositiveComments>232</eachbay:PositiveComments>
+            <eachbay:NeutralComments>0</eachbay:NeutralComments>
+            <eachbay:NegativeComments>0</eachbay:NegativeComments>
+            <ma:MemberInfoPage xlink:type='simple' xlink:href='http://auction.eachbay.com/showRating/user=VintageRecordFreak' xlink:role='ma:MemberInfoPage' />            
+        </ma:High_Bidder>
+        <ma:Seller xmlns:seller='http://www.example.com/auctioneers#eachbay'>
+            <seller:ID>StarsOn45</seller:ID>
+            <seller:PositiveComments>80</seller:PositiveComments>
+            <seller:NeutralComments>1</seller:NeutralComments>
+            <seller:NegativeComments>2</seller:NegativeComments>
+            <ma:MemberInfoPage xlink:type='simple' xlink:href='http://auction.eachbay.com/showRating/user=StarsOn45' xlink:role='ma:MemberInfoPage' />            
+        </ma:Seller>
+    </ma:Trading_Partners>
+
+    <ma:Details>
+        <record xmlns='http://www.example.org/music/records'>
+            <artist>Wynton Marsalis</artist>
+            <title>Think of One ...</title>
+            <recorded>1983</recorded>
+            <label>Columbia Records</label>
+            <remark xml:lang='en'>
+                Columbia Records 12" 33-1/3 rpm LP, #FC-38641, Stereo. The record is
+                still clean and shiny and looks unplayed (looks like NM condition).
+                The cover has very light surface and edge wear.
+            </remark>
+            <remark xml:lang='de'>
+                Columbia Records 12" 33-1/3 rpm LP, #FC-38641, Stereo. Die Platte
+                ist noch immer sauber und gläzend und sieht ungespielt aus
+                (NM Zustand). Das Cover hat sehr leichte Abnutzungen an der Oberfläche und
+                an den Ecken.
+            </remark>
+
+        </record>
+    </ma:Details>
+
+</ma:Auction>         
+
+</ma:AuctionWatchList>

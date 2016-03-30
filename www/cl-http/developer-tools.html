@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<link href="/cl-http/css/base.css" rel="stylesheet" title="master" type="text/css">
+<title>Developer Tools</title>
+</head>
+
+<body>
+<h1>Developer Tools</h1>
+
+<hr>
+
+
+<dl>
+
+<dt><img src="/cl-http/icons/redball.gif"><b>Web Performance
+Testing</b><dd> CL-HTTP includes a facility for flogging a Web
+applications (<a
+href="/cl-http/show-documentation?HTTP:FLOG-SERVER">http:flog-server</a>)
+and URL metering tools (<a
+href="/cl-http/show-documentation?HTTP:WITH-METERED-RESPONSE">http:with-metered-response</a>).
+The flogger works by replaying log files and making requests of a server
+a specified rate.  This tools can be used in conjunction with Lisp
+metering tools to improve the performance of CL-HTTP and Web
+applications atop it.  In addition to flogging GET, the impleentation
+also handles the POST method.  (This approach to performance was
+originally inspired by Robert Thau's C-based Web Monkey, which he used
+to stress test Apache under UNIX.)
+
+<dt><img src="/cl-http/icons/redball.gif"><b>W3C Line Mode
+Browser</b><dd><a
+href="http://www.w3.org/pub/WWW/LineMode/">http://www.w3.org/pub/WWW/LineMode/</a><dd>Provides
+a suite of browser tools useful for testing servers, <i>e.g.,</i> acts
+as a HTTP 1.1 client. This code base has provided the foundation for
+most C-based browsers and servers developed to date, most notably NCSA
+Mosaic which grew to prominence as a graphical user interface to the
+CERN library.
+
+<dt><img src="/cl-http/icons/redball.gif"><b>W3C Jigsaw Client
+API</b><dd> <a
+href="http://www.w3.org/pub/WWW/Jigsaw/">http://www.w3.org/pub/WWW/Jigsaw/</a><dd>
+The W3C <a href="http://www.w3.org/pub/WWW/Jigsaw/">Jigsaw server</a>
+includes a <a
+href="http://www.w3.org/pub/WWW/Jigsaw/User/FAQ.html#client-hotjava">
+client API</a> that can drive Sun's <a
+href="http://www.javasoft.com/HotJava/index.html">HotJava Browser</a> as
+an HTTP 1.1 compliant client. The Java servlet notion was derived from
+CL-HTTP object-based response functions by the implementor while
+visiting MIT.
+
+</dl>
+
+<hr>
+</body>
+</html>

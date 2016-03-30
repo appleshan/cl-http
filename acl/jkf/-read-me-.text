@@ -1,0 +1,140 @@
+KAP 2006-10-07
+Updated to 70 216
+
+KAP 2006-04-02
+The server has been tested in ACL 8.0.
+Same changes as below still apply
+
+KAP 2005-08-21
+The server has been updated to work with ACl 7.0 and Cl-http 70-201
+Note that in the main server 2 changes are required:
+;;;KAP documentation in allegro does not allow &optional for doc-type
+(defmethod documentation ((script script) #-(or CMU LispWorks4 allegro) &optional doc-type)
+.....
+and
+;;;KAP documentation in allegro does not allow &optional for doc-type
+(defmethod documentation ((url documentation-mixin) #-(or CMU LispWorks4 allegro) &optional doc-type)
+...
+
+KAP 2003-10-11
+
+the server has been updated to work with ACL 6.2.
+a lot of missing definitions have been added
+To start, simply load the file start.lisp
+This will load and start the server and load the examples  
+Default host is localhost, default port is 8000.
+This will even work on disconnected laptops
+
+-- chunking is not really working with browsers of the netscape family
+
+
+					-[Tue Sep 18 08:39:20 2001 by jkf]-
+
+== Building and running cl-http on acl 5.0.1 and later ==
+
+The building process is quite a bit different in this version 
+than in previous versions.
+You can now compile all of the cl-http files without answering
+any configuration questions.   You can combine all of the cl-http
+files into one fasl file that you can load into a fresh lisp
+in order to add cl-http fucntionality.
+When you start cl-http you fill in the configuration details.
+
+
+--  simple compile and start procedure:
+
+1. cd to the acl/jkf subdirectory of the cl-http source tree.
+
+2. start lisp and type the following:
+
+    :ld load.lisp		
+
+    (build-cl-http)
+
+
+3.  when this is done cl-http is compiled and loaded and you're ready to start
+    the server, using a command like:
+
+
+    (http:start :port 8000 :listeners 5)
+
+    or
+
+    (http:start :port 8000 :listeners 5 :proxy t :proxy-port 8080)
+
+
+    If not specified, the port will default to 80 which isn't available
+    on Unix unless you're running as root.
+
+    The default number of listeners is 1.
+
+
+4.  Now if you want to test out the server you can 
+
+    (load-test)
+
+    to load in the cl-http toplevel web page. 
+    Now use a web browser to check to see if cl-http is running.
+
+
+
+
+
+-- advanced notes
+
+1. the (build-cl-http) step takes some time and requires that the
+   source be available. 
+
+   You can do
+
+       (build-cl-http :create-fasl t)
+
+   which will do a (build-cl-http) and then create a cl-http.fasl
+   fail containing all of cl-http.   
+   Once created you can load cl-http by just starting lisp and
+   loading cl-http.fasl
+
+   If the argument to :create-fasl is a filename then that 
+   is the name of the file that will hold the combined fasl.
+
+
+
+2. When cl-http is started it needs to know the location of
+   it's home directory (the directory which will correspond
+   to the logical device 'http').
+   The default is one directory level up from the current
+   directory (this assumes that you build cl-http in the acl501
+   directory).
+
+   You can specify the home directory when you start 
+   the server as follows:
+    
+    (http:start :home "/home/cl-http/")  ; note trailing slash
+
+
+
+3. cl-http has to figure out the host and domain name when it starts.
+   By default it tries to figure this out on its own and prints
+   the results after it starts.
+   If it is wrong of if it signal an error because it can't figure
+   it out you can specify it yourself when starting the server:
+
+    (http:start :host "www.mymachine.com")
+
+
+
+4. If you make a change in a macro and want to ensure that 
+   everything is recompiled even if it appears to be up to date
+   use:
+    
+    (build-cl-http :force-compile t)
+
+
+
+  
+    
+
+    
+
+
+

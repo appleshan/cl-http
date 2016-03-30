@@ -1,0 +1,64 @@
+This is a port of the CL-HTTP system to LispWorks for Windows, Mac OS X,
+Linux and UNIX from LispWorks, Ltd.
+
+This version has been tested on Windows NT, Red Hat Linux 7.1 and Mac OS X
+10.2.3, 10.3, 10.4.2, 10.4.6 with no known problems.
+
+System requirements
+-------------------
+
+To run it under LispWorks you need one of the following:
+
+	LispWorks 4.4 on UNIX, Windows, Linux or Macintosh.
+        Patches: the latest patch bundle from
+                 http://www.lispworks.com/downloads/patch-selection.html
+
+        LispWorks 4.3 on UNIX, Windows, Linux or Macintosh.
+        Patches: the latest patch bundle from
+                 http://www.lispworks.com/downloads/patch-selection.html
+                 plus the parse-integer patch for Windows or Linux
+                 which is obtainable by mailing lisp-support@lispworks.com.
+
+        LispWorks 4.2 on UNIX, Windows or Linux.
+        Patches: the latest patch bundle from
+                 http://www.lispworks.com/downloads/patch-selection.html.
+
+        LispWorks 4.1 on UNIX, Windows or Linux.
+        Patches: the latest patch bundle from
+                 http://www.lispworks.com/downloads/patch-selection.html
+                 plus if you have CLIM loaded then you will need the patch:
+                   atomic-incf-decf-delta
+                 which is obtainable by mailing lisp-support@lispworks.com
+
+        LispWorks 4.0.1 on Windows.
+        Patches: the latest patch bundle from
+                 http://www.lispworks.com/downloads/patch-selection.html
+                 plus if you have CLIM loaded then you will need the patch:
+                   atomic-incf-decf-delta
+                 which is obtainable by mailing lisp-support@lispworks.com
+
+
+Compiling and running CL-HTTP
+-----------------------------
+
+1) For LispWorks 4.0.1 and 4.1, locate the private patches and edit the
+defparameter in lw/pre-cl-http.lisp *private-patches-directory* to contain the
+name of the directory of the patches.  The value should be a string with a
+trailing slash to denote a directory.  For LispWorks 4.2 and 4.3, add any
+private patches to the private-patches directory in the LispWorks
+installation.
+
+2) Start the LispWorks executable.
+
+3) [UNIX only] Either start the LispWorks windowing environment or execute
+(mp:initialize-multiprocessing) from the tty prompt.  Alternatively, supply
+the -multiprocessing option when starting the executable.
+
+4) Load lw/start.lisp.
+
+The loading script asks various questions, such as you whether want to compile
+and whether you want to start the server.  To run CL-HTTP on the LispWorks
+Personal Edition, leave the default settings to conserve memory.
+
+Please report any bugs to bug-lw-cl-http@no-spam.cl-http.org.
+

@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<link href="/cl-http/css/base.css" rel="stylesheet" title="master" type="text/css">
+<title>Setting Up Web Directories</title>
+
+</head>
+<body>
+
+<h1><img src="/cl-http/icons/construction.gif" align="left">Setting Up Web Directories</h1>
+
+<hr>
+
+<p>CL-HTTP supports HTTP methods beyond GET that enable you to write files
+(PUT) and delete them (DELETE) over the Web. In order to use these
+capabilities you will need to set up appropriate Web directories on your
+server. This section explains how to configure a CL-HTTP server for writing
+URLs, assuming the background provided by the <a
+href="/cl-http/authentication/authentication.html">Security &amp;
+Authentication</a> documentation.</p>
+
+<p>First, you need to set up an authentication realm to keep track of access
+control information. For this application, a digest authentication realm
+provides better security because passwords do not travel in clear text over
+the Internet.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:ADD-REALM">http:add-realm</a> :web-directory :digest)
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Second, you need a group in the realm for users that will write files to the Web directory.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:ADD-GROUP">http:add-group</a> :web-directory :users)
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Third, you can define a set of capabilities within the realm that can be attached to 
+each directory that you export. Here, the group, <i>users</i>, within the realm, <i>web-
+directory</i>, have the capability to use all HTTP methods on URLs within the directory.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:ADD-ACCESS-CONTROL-GROUP">http:add-access-control-group</a> :web-directory-capabilities 
+			       :web-directory
+			       :capabilities '((:default :users)))
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Fourth, you are now ready to add a user into the group, <i>users</i>, who will be able to 
+read, write, and delete URLs within the directory.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:ADD-USER">http:add-user</a> "JaneHacker" 
+	       :web-directory
+	       :groups '(:users)
+	       :password "*****"
+	       :personal-name "Jane Q. Hacker"
+	       :email-address "JaneHacker@mac.com")
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Fifth, you need to save all of this authentication information persistently.
+By evaluating the following form, all authentication data in the dynamic Lisp
+environment is saved to disk for automatic reload upon server relaunch.
+Additionally, passwords are saved as one-way hashes for added security.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+(<a href="/cl-http/show-documentation?HTTP:SAVE-AUTHENTICATION-DATA">http:save-authentication-data</a>)
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Sixth, you are ready to export directories with access control. Here, the
+presence of access-control capabilities enables the potentially dangerous
+methods of writing and deleting URLs only for authorized users. For additional
+security you may restrict access further based on subnets that are allowed to
+read (<code>:read-subnets</code>) or write (<code>:write-subnets</code>) to
+the directory.  See the documentation for <a
+href="/cl-http/show-documentation?HTTP:EXPORT-URL">http:export-url</a> for
+further details.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:EXPORT-URL">http:export-url</a> #u"/web-directory/"
+                 :directory
+                 :pathname (pathname "http:web-directory;")
+                 :recursive-p t	 </b><i>;recursively descend directory levels</i><b>
+                 :authentication-realm :web-directory
+                 :capabilities :web-directory-capabilities)
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>This export form should be evaluated in fresh server environment to make
+sure that all the URLs within the directory have the correct authentication
+information. Alternatively, you can supply non-null values for either of the
+keyword arguments to <a href="/cl-http/show-documentation?HTTP:EXPORT-URL">
+http:export-url</a> <code>:recache</code> or <code>:immediate-export</code>.</p>
+
+<p>Access control groups do not allow you to specify that an HTTP method
+should be open to the world. If want open access with restricted write access,
+you can either export the same file system structure via a different external
+URL, such as:</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:EXPORT-URL">http:export-url</a> #u"/public-directory/"
+                 :directory
+                 :pathname (pathname "http:web-directory;")
+                 :recursive-p t)  </b><i>;recursively descend directory levels</i><b>
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Or, you can use subnet access control to restrict write access (:PUT,
+:POST, :DELETE) to certain Internet addresses, for example:</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:EXPORT-URL">http:export-url</a> #u"/web-directory/"
+                 :directory
+                 :pathname (pathname "http:web-directory;")
+                 :recursive-p t	 </b><i>;recursively descend directory levels</i><b>
+                 :write-subnets (list (local-host-ip-address)))</b><i>;trusted hosts</i><b>
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>Finally, you are now ready to use popular HTML authoring tools (e.g., <a
+href="www.mozilla.org>Mozilla</a>, Netscape Communicator, or Microsoft Front
+Page) to read and write URLs over the Web.</p>
+
+<p>If the CL-HTTP base client is loaded, you can also access these directories
+programmatically from Lisp using the function <a
+href="/cl-http/show-documentation?HTTP:COPY-FILE">http:copy-file</a>, or use
+the basic client functions <a
+href="/cl-http/show-documentation?HTTP:PUT-URL">http:put-url</a> and <a
+href="/cl-http/show-documentation?HTTP:DELETE-URL">http:delete-url</a>.
+Additionally, you can obtain directory listings beyond the standard CL-HTTP
+HTML formats by supplying the accept header to <a
+href="/cl-http/show-documentation?HTTP:SHOW-URL">http:show-url</a> and
+specifying either <i>text/uri-list</i> or <i>text/x-directory-list</i> as an
+acceptable media type.</p>
+
+<div align=center>
+<table>
+ <tr><td>
+<code>
+<b>
+<pre>
+(<a href="/cl-http/show-documentation?HTTP:SHOW-URL">http:show-url</a> #u"/web-directory/"
+               :headers '(:accept ((:text :x-directory-list) 
+                                   (:text :uri-list)
+                                   (:* :*))))
+</pre>
+</b>
+</code>
+  </td></tr>
+</table>
+</div>
+
+<p>While <i>text/uri-list</i> provides just a sequence of URIs in the directory,
+<i>text/x-directory-list</i> returns a sequence of properties lists containing the
+URL, size, modification date, as well as the creation date and author on some
+platforms.</p>
+
+<hr>
+href="http://www.ai.mit.edu/people/jcma/jcma.html">John C. Mallery</a> -- <a
+href="mailto:jcma@nospam.csail.mit.edu">jcma@nospam.csail.mit.edu</a><br><a
+href="http://web.mit.edu/">M.I.T.</a> <a
+href="http://www.csail.mit.edu/">Computer Science &amp; Artificial
+Intelligence Laboratory</a> </address>
+</body> </html>

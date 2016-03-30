@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>HTML 4 Code Generation</title>
+</head>
+<body>
+<h1>HTML 4 Code Generation</h1>
+<br>
+<span style="font-weight: bold;">HTML4.LISP</span> will generate <span
+ style="font-weight: bold;">HTML</span> code based on the current <span
+ style="font-weight: bold;">HTML 4 DTD</span> (<span
+ style="font-style: italic;">strict/transitional/frameset</span>)
+loaded into the <span style="font-weight: bold;">HTML-PARSER</span>.
+The <span style="font-weight: bold;">HTML-PARSER</span> must be <span
+ style="font-style: italic;">loaded</span> and<span
+ style="font-style: italic;"> initialized</span> <span
+ style="text-decoration: underline;">before</span> loading <span
+ style="font-weight: bold;">HTML4.LISP</span>.<br>
+<br>
+<span style="font-weight: bold; font-style: italic;">DECLARE functions</span>
+are generated for <span style="font-style: italic;">elements <span
+ style="text-decoration: underline;">without</span> content</span> (META,
+LINK, IMG,...) and <span style="font-weight: bold; font-style: italic;">WITH
+macros</span> are generated for <span style="font-style: italic;">elements<span
+ style="text-decoration: underline;">with</span> content</span> (HTML,
+HEAD, BODY,...). All but a few (DECLARE-DOCUMENT-TYPE, WITH-HEADING,
+WITH-SECTION-HEADING, WITH-PHRASE, WITH-FONTSTYLE) functions/macros are
+automatically generated.<br>
+<br>
+The <span style="font-style: italic;">DTD element names</span> were
+chosen as the names of the functions/macros (with the appropriate <span
+ style="font-style: italic;">DECLARE-</span> or <span
+ style="font-style: italic;">WITH-</span> suffix) and the <span
+ style="font-style: italic;">DTD attribute names</span> were chosen as
+the names of the attribute parameters. For example: <span
+ style="font-weight: bold;">WITH-HEAD</span>, <span
+ style="font-weight: bold;">DECLARE-META</span>, <span
+ style="font-weight: bold;">:LANG</span>, <span
+ style="font-weight: bold;">:DIR</span>. <span
+ style="font-style: italic; font-weight: bold;"><br>
+<br>
+Alias</span> functions/macros are created in an attempt to be somewhat
+backwardly compatible: for example, <span style="font-weight: bold;">WITH-PARAGRAPH</span>
+may be used instead of <span style="font-weight: bold;">WITH-P</span>.
+You may generate your own aliased functions/macros for any of the
+elements defined in the DTD. However, aliases are not created for
+attributes: so, for example, <span style="font-weight: bold;">:align</span>
+must be used instead of <span style="font-weight: bold;">:alignment</span>.
+Keyword parameters are used almost exclusively for attributes: the
+exception being backwardly compatible functions/macros like
+DECLARE-TITLE and WITH-SECTION-HEADING. Use the <span
+ style="font-weight: bold;">CL-HTTP Documentation Facility</span> after
+loading the code for a complete list of HTML4 functions, macros, and
+attributes.<br>
+<br>
+Missing <span style="font-style: italic;">required</span> attributes
+(for example, BDO :DIR) signal an error. Invalid/extraneous attributes
+also signal an error. Attribute values are verified and bad values
+signal an error. However, this verification is somewhat loose: for
+example, pixels are verified as CDATA (as currently defined in the
+HTML-PARSER DTDs).<br>
+<br>
+Under Genera, I've encountered several HTML-PARSER directory problems
+with an especially interesting one when I attempt to reinitialize the
+parser in real-time, so I haven't tested the HTML4 code generator after
+a real-time DTD switch (although it <span style="font-style: italic;">should</span>
+work). Perhaps HTML4 needs to be able to load all three HTML4 DTDs and
+dynamically switch!?!<br>
+<br>
+John Mallery has suggested implementation of a simple translation table
+for attribute names so that, for example, <span
+ style="font-weight: bold;">:alignment</span><span
+ style="font-style: italic;"> </span>could be used instead of <span
+ style="font-weight: bold;">:align</span>.&nbsp; I'll investigate
+further when I have the time. Originally, I was going to use James
+Anderson's XML parser, but had trouble getting it to work under Genera,
+so decided to use the HTML-PARSER instead. James may also have HTML4
+code generation working in conjunction with his parser, but since I
+couldn't get his parser to load....<br>
+<br>
+HTML4 tested with:<br>
+<ul>
+  <li>MacIvory/Genera 8.3 </li>
+  <li>CL-HTTP 70-156 </li>
+  <li>HTML-PARSER V11 </li>
+</ul>
+Comments welcome!<br>
+<br>
+conradbookout@zevo.net<br>
+<br>
+</body>
+</html>
+
