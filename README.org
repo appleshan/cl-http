@@ -1,0 +1,98 @@
+在 SBCL 开源 Lisp 平台上运行的 CL-HTTP——田春冰河维护版
+
+@See http://tianchunbinghe.blog.163.com/blog/static/7001201153035339930/
+
+* 背景
+CL-HTTP 是一个纯 Common Lisp 实现的高级 Web 应用服务器。和 Common Lisp 社区的
+其他流行 HTTP 服务器，例如 Hunchentoot 和 AllegroServe 相比，CL-HTTP 不仅提供了
+HTTP 1.1 协议的完整实现，还提供了一体化的解决方案，包括基于 Lisp 宏的动态
+HTML/XHTML 代码生成，面向对象的 Web 交互设计，权限控制，HTTPS 和 HTTP Proxy 支持
+（带有缓存）等，另外它还提供 HTTP 客户端，SMTP/POP3/FTP 支持以及其他数不清的高级
+特性。CL-HTTP 是目前开源 Common Lisp 项目中规模最大、最复杂的，其核心 server 模
+块源代码 5 万多行，所有模块连同各种平台的移植在内共计 35 万行 Common Lisp 代码
+（bz2 压缩一下其实只有不到 7M），可谓是浩如烟海，Lisp 新手往往迷失在其庞大的目录
+树里。
+CL-HTTP 最初是在 Symbolics Lisp Machine 上开发的，1994 年开始公开了源代码。作者
+是 MIT AI 实验室 (CSAIL) 的教授 John C. Malley，目前主要维护者还包括 Rainer
+ Joswig 和来自几个商业 CL 平台的专家，尤其是 LispWorks 公司的 Martin Simmons。
+CL-HTTP 的开发工作非常缓慢，但也极度稳定可靠，不过主要是在上一代的很多商业平台上。
+CL-HTTP 的源代码 SVN 是不公开的，仅少量核心开发者具有访问权限，但是一般可以通过
+发信给邮件列表向开发者索取最新的源代码。这给追踪其源代码变化带来了一定困难，因此
+我自己（田春冰河）维护了一个私有的 SVN 库将历史上获得的所有代码快照全部提交在里
+面，再注入我自己（田春冰河）的一些补丁。
+* 获得最新的 CL-HTTP 源码
+CL-HTTP 网站上目前公开下载的最后版本 70.190a 已经是很老的版本了，目前的最新版本
+是 70.218，SVN revision 至少为 436。Rainer Joswig 定期将 SVN 上的最新版本打包放
+在它的个人主页上，下载地址是：
+
+http://lispm.dyndns.org/distributions/
+
+其中目前的最新版本的下载文件名是 cl-http-70-218-s436.tar.gz。不过由于上游合并补
+丁的速度非常慢，即便是这个最新版本仍然有一些问题导致 SBCL 下无法顺利加载。推荐使
+用的是本文附件中的版本，它来自我自行维护的 CL-HTTP 私有 SVN 库，修复了很多 bug，
+补丁已提交到上游但尚未被合并。有兴趣的读者可以同时下载两个文件然后自行比对其中的
+差异。
+* 源代码结构
+CL-HTTP 的源代码可以大致分为下列 7 个部分：
+1. 平台无关的核心代码
+   包括 HTTP/HTTPS 协议本身的实现和 HTML、URL 等标准的实现代码；
+2. 平台无关的周边代码
+   包括 HTML 解析器、客户端、SMTP/FTP 等协议的实现等；
+3. 平台无关的用户贡献代码
+   包括 POP3 客户端、XML 工具箱以及最重要的可移植模板 (port-template) 代码等；
+4. 平台相关的核心代码
+   包括适用于 CMUCL、LispWorks、MCL、SCL 等主要平台的网络和工具性代码等；
+5. 平台相关的周边代码
+   例如 LispWorks 和 MCL 下的图形界面控制台等；
+6. 平台相关的用户贡献代码
+   例如 LispWorks 下的 UTF-8 支持、远程 Listener 和数据库认证接口等；
+7. 示例站点的源代码和静态文件。
+
+以下简要介绍 CL-HTTP 的源代码目录结构，最顶层各目录的说明如下表所示：
+| 目录名      | 类别                   | 用途说明                                           |
+|-------------+------------------------+----------------------------------------------------|
+| acl         | 平台相关代码           | Allegro CL 移植                                    |
+| client      | 平台无关的周边代码     | HTTP 客户端                                        |
+| clim        | 平台无关的周边代码     | 基于 CLIM 的图形控制台                             |
+| cmucl       | 平台相关代码           | CMU Common Lisp 移植                               |
+| contrib     | 平台无关的用户贡献代码 | 各种有用的扩展，尤其包括可移植模板 (port-template) |
+| examples    | 示例站点               | 示例站点的源代码                                   |
+| ftp         | 平台无关的周边代码     | FTP 客户端（代理）                                 |
+| html-parser | 平台无关的周边代码     | HTML 解析器                                        |
+| lambda-ir   | 平台无关的周边代码     | 全文索引                                           |
+| lcl         | 平台相关代码           | Lucid/Liquid Common Lisp 移植                      |
+| lispm       | 平台相关代码           | 最初在 Symbolics Lisp Machine 上开发的全部代码     |
+| lw          | 平台相关代码           | LispWorks 移植                                     |
+| mcl         | 平台相关代码           | Macintosh Common Lisp 移植                         |
+| proxy       | 平台无关的核心代码     | HTTP Proxy（正反向都有）                           |
+| scl         | 平台相关代码           | Scieneer Common Lisp 移植                          |
+| server      | 平台无关的核心代码     | 核心 HTTP 协议实现和 HTML 生成代码等               |
+| smtp        | 平台无关的周边代码     | SMTP 协议实现                                      |
+| standards   | 静态文件               | 相关 RFC 标准的文本，通过示例站点可访问到          |
+| w3p         | 平台无关的周边代码     | W3P (Presentation-based Interface)                 |
+| w4          | 平台无关的周边代码     | W4 Constraint-Guided Web Walker                    |
+| www         | 示例站点               | 示例站点的静态页面和其他数据文件                   |
+* 在 SBCL 上启动 CL-HTTP 的方法
+** 1、进入 cl-http 源代码工程根目录
+slime-cd
+~/workspace/cl-http/
+** 2、加载启动文件
+它的相对路径是 contrib/kpoeck/port-template/load.lisp。
+#+BEGIN_SRC lisp
+(load "contrib/kpoeck/port-template/load.lisp")
+#+END_SRC
+** 3、编译整个系统
+一次完全编译可能需要花几分钟时间，并且每次只能做完全编译。
+#+BEGIN_SRC lisp
+(compile-all)
+#+END_SRC
+** 4、不使用网络的情况下测试整个系统
+#+BEGIN_SRC lisp
+(load-cl-http-tester)
+#+END_SRC
+** 5、启动示例站点
+#+BEGIN_SRC lisp
+(http::start-examples)
+#+END_SRC
+** 6、web 浏览器打开网页
+http://localhost:8000/
